@@ -65,6 +65,7 @@ echo "Install RPG baseline"
 cd $project_path/flightmare/flightpy/flightrl
 pip install .
 
+pip install opencv-contrib-python flightgym rpg_baselines
 echo "Run the first vision demo."
 cd $project_path/envtest 
 python3 -m python.run_vision_demo --render 1

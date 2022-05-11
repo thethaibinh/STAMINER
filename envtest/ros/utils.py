@@ -58,6 +58,9 @@ class AgileQuadState:
         self.omega = np.array([quad_state.velocity.angular.x,
                                quad_state.velocity.angular.y,
                                quad_state.velocity.angular.z], dtype=np.float32)
+        self.acc   = np.array([quad_state.acceleration.linear.x,
+                               quad_state.acceleration.linear.y,
+                               quad_state.acceleration.linear.z], dtype=np.float32)
 
     def __repr__(self):
         repr_str = "AgileQuadState:\n" \
