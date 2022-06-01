@@ -12,7 +12,7 @@ def compute_command_vision_based(state, img):
     # !!! Begin of user code !!!
     # TODO: populate the command message
     ################################################
-    print("Computing command vision-based!")
+    # print("Computing command vision-based!")
     # print(state)
     # print("Image shape: ", img.shape)
 
@@ -20,21 +20,21 @@ def compute_command_vision_based(state, img):
     command_mode = 0
     command = AgileCommand(command_mode)
     command.t = state.t
-    command.rotor_thrusts = [1.0, 1.0, 1.0, 1.0]
+    command.rotor_thrusts = autopilot.update(state)
 
     # Example of CTBR command
-    command_mode = 1
-    command = AgileCommand(command_mode)
-    command.t = state.t
-    command.collective_thrust = 15.0
-    command.bodyrates = [0.0, 0.0, 0.0]
+    # command_mode = 1
+    # command = AgileCommand(command_mode)
+    # command.t = state.t
+    # command.collective_thrust = 15.0
+    # command.bodyrates = [0.0, 0.0, 0.0]
 
     # Example of LINVEL command (velocity is expressed in world frame)
-    command_mode = 2
-    command = AgileCommand(command_mode)
-    command.t = state.t
-    command.velocity = [1.0, 0.0, 0.0]
-    command.yawrate = 0.0
+    # command_mode = 2
+    # command = AgileCommand(command_mode)
+    # command.t = state.t
+    # command.velocity = [1.0, 0.0, 0.0]
+    # command.yawrate = 0.0
 
     ################################################
     # !!! End of user code !!!
@@ -51,12 +51,11 @@ def compute_command_state_based(state, obstacles, rl_policy=None):
     # print("Computing command based on obstacle information!")
     # print(state)
     # print("Obstacles: ", obstacles)
-    des_pos = [65, 0, 3]
     # Example of SRT command
     command_mode = 0
     command = AgileCommand(command_mode)
     command.t = state.t
-    command.rotor_thrusts = autopilot.update(state, des_pos)
+    command.rotor_thrusts = autopilot.update(state)
     # Example of CTBR command
     # command_mode = 1
     # command = AgileCommand(command_mode)

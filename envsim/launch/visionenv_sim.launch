@@ -35,4 +35,6 @@
     <node name="flight_render" pkg="flightrender" type="RPG_Flightmare.x86_64" if="$(arg render)"/>
     <!-- args="-batchmode"/> -->
 
+    <!-- Trajectory Planner -->
+    <node name="planner" pkg="rappids" type="main"/>
 </launch>

@@ -7,14 +7,14 @@ Please feel free to use and modify this, but keep the above information. Thanks!
 """
 
 import numpy as np
-from numpy import sqrt, square
+from numpy import sqrt, square, pi
 from numpy.linalg import norm
 import time
 import warnings
 
 GRAVITY_MSS             = 9.80665
 POSCONTROL_ACCEL_XY_MAX = 9.8
-M_PI                    = 3.141592653589793
+# M_PI                    = 3.141592653589793
 
 try:
     # Get monotonic time to ensure that time deltas are always positive
@@ -31,6 +31,61 @@ def limit_vector_length(vector, max_length):
         vector[0] *= (max_length / vector_length)
         vector[1] *= (max_length / vector_length)    
     return vector
+
+# return bearing in centi-degrees between two positions
+def get_bearing_cd(origin, destination):
+    bearing = np.rad2deg(np.arctan2(destination[1]-origin[1], destination[0]-origin[0])) * 100
+    if (bearing < 0):
+        bearing += 36000.0
+    return wrap_180_cd(bearing)
+
+def get_bearing_rad(origin, destination):
+    bearing = np.arctan2(destination[1]-origin[1], destination[0]-origin[0])
+    if (bearing < 0):
+        bearing += (2 * pi)
+    return wrap_180_rad(bearing)
+
+def get_bearing_deg(origin, destination):
+    bearing = np.rad2de(np.arctan2(destination[1]-origin[1], destination[0]-origin[0]))
+    if (bearing < 0):
+        bearing += 360
+    return wrap_180_deg(bearing)
+
+def wrap_360_cd(angle):
+    res = np.fmod(angle, 36000.0)
+    if (res < 0):
+        res += 36000.0
+    return res
+
+def wrap_180_cd(angle):
+    res = wrap_360_cd(angle)
+    if (res > 18000.0): 
+        res -= 36000.0
+    return res
+
+def wrap_360_deg(angle):
+    res = np.fmod(angle, 360.0)
+    if (res < 0):
+        res += 360.0
+    return res
+
+def wrap_180_deg(angle):
+    res = wrap_360_deg(angle)
+    if (res > 180.0): 
+        res -= 360.0
+    return res
+
+def wrap_360_rad(angle):
+    res = np.fmod(angle, 2*pi)
+    if (res < 0):
+        res += 2*pi
+    return res
+
+def wrap_180_rad(angle):
+    res = wrap_360_rad(angle)
+    if (res > pi): 
+        res -= 2*pi
+    return res
 
 def quat_to_euler_angles(q):
     #  Computes the euler angles from a unit quaternion using the

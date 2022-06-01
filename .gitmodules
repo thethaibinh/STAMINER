@@ -11,3 +11,6 @@
 	path = dodgedrone_simulation
 	url = git@github.com:uzh-rpg/dodgedrone_simulation.git
 	branch = main
+[submodule "envtest/ros/planner/rappids"]
+	path = envtest/ros/planner/rappids
+	url = git@github.com:binhnt94/rappids.git

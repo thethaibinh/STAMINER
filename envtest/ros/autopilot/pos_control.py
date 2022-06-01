@@ -6,31 +6,32 @@ license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 """
 
+from cmath import pi
 import numpy as np
 from simple_pid import PID
 import math
-from autopilot.utils import SqrtController, SqrtControllerAtt, limit_vector_length, quat_to_euler_angles
+from autopilot.utils import SqrtController, SqrtControllerAtt, limit_vector_length, quat_to_euler_angles, get_bearing_rad 
 
 GRAVITY_MSS                 = 9.80665
 POSCONTROL_ACCELERATION_MIN = 0.50      # minimum horizontal acceleration in cm/s/s - used for sanity checking acceleration in leash length calculation
-POSCONTROL_ACCEL_XY_MAX     = 2         # max horizontal acceleration in cm/s/s that the position velocity controller will ask from the lower accel controller
+POSCONTROL_ACCEL_XY_MAX     = 5         # max horizontal acceleration in cm/s/s that the position velocity controller will ask from the lower accel controller
 POSCONTROL_ANGLE_XY_MAX     = 60.0      # maximum autopilot commanded angle (in degrees) for position control
 POSCONTROL_ACCEL_Z          = 2.0       # max vertical acceleration in cm/s/s.
 POSCONTROL_SPEED            = 1.0       # max horizontal speed in cm/s
 POSCONTROL_SPEED_DOWN       = -1.5      # max descent rate in cm/s
 POSCONTROL_SPEED_UP         = 2.5       # max climb rate in cm/s
 POSCONTROL_LEASH_LENGTH_MIN = 0.5       # minimum leash lengths in cm
-M_PI                        = 3.141592653589793
+# M_PI                        = 3.141592653589793
 
 # ---------------------------
 # Position P gains
 POSCONTROL_POS_Z_P      = 1.0
 POSCONTROL_VEL_Z_P      = 5.0
-POSCONTROL_ACC_Z_P      = 2.0    # 0.5 vertical acceleration controller P gain default
-POSCONTROL_ACC_Z_I      = 2.0    # 1 vertical acceleration controller I gain default
+POSCONTROL_ACC_Z_P      = 0.5    # 0.5 vertical acceleration controller P gain default
+POSCONTROL_ACC_Z_I      = 1.0    # 1 vertical acceleration controller I gain default
 POSCONTROL_ACC_Z_D      = 0
 POSCONTROL_POS_XY_P     = 2     # 1
-POSCONTROL_VEL_XY_P     = 5     # 2 horizontal velocity controller P gain default
+POSCONTROL_VEL_XY_P     = 2     # 2 horizontal velocity controller P gain default
 POSCONTROL_VEL_XY_I     = 1     # 1 horizontal velocity controller I gain default
 POSCONTROL_VEL_XY_D     = 0.0   # 0.5 horizontal velocity controller D gain default
 
@@ -50,17 +51,18 @@ class PosControllers:
         self._leash_down_z      = POSCONTROL_LEASH_LENGTH_MIN       # vertical leash down in cm.  target will never be further than this distance below the vehicle
         self._leash_up_z        = POSCONTROL_LEASH_LENGTH_MIN       # vertical leash up in cm.  target will never be further than this distance above the vehicle
     
-    def update(self, states, des_pos):
+    def update(self, state, des_pos):
         self.calc_leash_length_xy()
         self.calc_leash_length_z()
         # run posotion controllers
-        des_vel = self.pos_controller(states, des_pos)
+        des_vel = self.pos_controller(state, des_pos)
         # run velocity controllers
-        des_accel = self.vel_controller(states, des_vel)
-        
+        des_accel = self.vel_controller(state, des_vel)
+        # get bearing for yaw reference
+        bearing = get_bearing_rad(state.pos, des_pos)
         # update angle targets that will be passed to attitude controller
         # Collective thrust & body orientation: [throttle, roll, pitch, yaw]
-        des_CTBO = np.concatenate((self.accel_z_controller(states, des_accel), self.accel_to_lean_angles(states, des_accel), [0]))
+        des_CTBO = np.concatenate((self.accel_z_controller(state, des_accel), self.accel_to_lean_angles(state, des_accel), [0]))
         return des_CTBO
     
     def accel_z_controller(self, states, des_acc):
@@ -101,14 +103,14 @@ class PosControllers:
         vel_target[2] = self.sqrt_pos_z(pos_error[2], POSCONTROL_POS_Z_P, POSCONTROL_ACCEL_Z)
         return vel_target
 
-    def vel_controller(self, states, des_vel):
+    def vel_controller(self, state, des_vel):
         # calculate velocity error
         if (des_vel[2] < POSCONTROL_SPEED_DOWN):
             des_vel[2] = POSCONTROL_SPEED_DOWN
         
         if (des_vel[2] > POSCONTROL_SPEED_UP):
             des_vel[2] = POSCONTROL_SPEED_UP
-        vel_error = des_vel - states.vel
+        vel_error = des_vel - state.vel
 
         accel_target = np.zeros(3)
         # acceleration to correct for velocity error and scale PID output to compensate for optical flow measurement induced EKF noise
