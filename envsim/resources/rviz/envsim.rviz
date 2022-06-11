@@ -211,16 +211,25 @@ Visualization Manager:
       Transport Hint: raw
       Unreliable: false
       Value: false
-    - Class: rviz/Image
+    - Class: rviz/PointCloud2
       Enabled: true
-      Image Topic: /kingfisher/dodgeros_pilot/unity/depth
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: Image
-      Normalize Range: true
-      Queue Size: 2
+      Topic: /cloud_out
+      Name: Environmental perception
+      Style: Point
+      Size: 2
+      Queue Size: 5
       Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/PointCloud2
+      Enabled: false
+      Topic: /kingfisher/dodgeros_pilot/groundtruth/pcl
+      Name: Environmental ground truth
+      Style: Point
+      Size: 2
+      Queue Size: 5
+      Transport Hint: raw
+      Color Transformer: AxisColor
       Unreliable: false
       Value: true
   Enabled: true

@@ -30,7 +30,7 @@ class TrajectoryGenerator:
         self._init_time = None
         self._origin = [0.0, 0.0, 0.0]
         self._des_target1 = [0.0, 0.0, 5.0]
-        self._des_target2 = [15.0, 0.0, 3.0]
+        self._des_target2 = [5.0, 0.0, 5.0]
         self._des_target = None
 
         self._ref = visualization_msgs.Marker()
@@ -71,8 +71,7 @@ class TrajectoryGenerator:
 
     # update_wpnav - run the wp controller - should be called at 100hz or higher
     def update_callback(self, traj):
-        # self._des_target = [traj.z, -traj.x, -traj.y]
-        self._des_target = [traj.x, traj.y, traj.z]
+        self._des_target = traj
 
     def update(self, states):
         now = _current_time()
@@ -80,7 +79,7 @@ class TrajectoryGenerator:
             self._init_time = _current_time()
             out =  self._des_target1
         elif ((now - self._init_time) > 5.0) and (self._des_target is not None):
-            out = self._des_target
+            out = [self._des_target.x, self._des_target.y, self._des_target.z]
         else:
             out = self._des_target1
         
@@ -88,10 +87,7 @@ class TrajectoryGenerator:
         self._ref.header.stamp = rospy.Time.now()
         # ref_waypoint = self._des_target + states.pos
         # temp = Point(ref_waypoint[0],ref_waypoint[1],ref_waypoint[2])
-        temp = Point(self._des_target[0], 
-                    self._des_target[1], 
-                    self._des_target[2])
-        self._ref.points.append(temp)
+        self._ref.points.append(self._des_target)
         self._reference_waypoint_pub.publish(self._ref)
         
         # self._curr.header.stamp = rospy.Time.now()

@@ -9,6 +9,20 @@
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 
+#include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/PointCloud2.h>
+
+//this is a global definition of the points to be used
+//changes to omit color would need adaptations in 
+//the visualization too
+#include <pcl/io/io.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include "pcl/point_cloud.h"
+#include "pcl/point_types.h"
+namespace sm = sensor_msgs;
+typedef pcl::PointXYZ point_type;
+typedef pcl::PointCloud<point_type> pointcloud_type;
+
 #include <filesystem>
 
 #include "std_msgs/String.h"
@@ -22,6 +36,8 @@
 #include "dodgelib/simulator/quadrotor_simulator.hpp"
 #include "dodgelib/utils/timer.hpp"
 #include "dodgeros/ros_pilot.hpp"
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
 
 // flightlib
 #include "flightlib/envs/vision_env/vision_env.hpp"
@@ -48,8 +64,11 @@ class VisionSim {
   ros::Publisher odometry_pub_;
   ros::Publisher state_pub_;
   ros::Publisher clock_pub_;
+  tf2_ros::TransformBroadcaster tfb;
+  geometry_msgs::TransformStamped transformStamped;
 
   ros::Publisher obstacle_pub_;
+  ros::Publisher pcl_pub_;
 
   image_transport::Publisher image_pub_;
   image_transport::Publisher depth_pub_;

@@ -6,6 +6,7 @@ find_package(catkin_simple REQUIRED)
 catkin_simple(ALL_DEPS_REQUIRED)
 
 # Setup Default Build Type as Release
+set(CMAKE_BUILD_TYPE Debug)
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif ()

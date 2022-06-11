@@ -128,6 +128,7 @@ To use the competition software, three steps are required:
 
    ```
    rostopic pub /kingfisher/start_navigation std_msgs/Empty "{}" -1
+   python src/agile_flight/envtest/ros/run_competition.py
    ```
 
 If you want to perform steps 1-3 automatically, you can use the `launch_evaluation.bash N` script provided in this folder. It will automatically perform `N` rollouts and then create an `evaluation.yaml` file which summarizes the rollout statistics.

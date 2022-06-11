@@ -22,7 +22,7 @@ VisionSim::VisionSim(const ros::NodeHandle &nh, const ros::NodeHandle &pnh)
 
   obstacle_pub_ =
     pnh_.advertise<envsim_msgs::ObstacleArray>("groundtruth/obstacles", 1);
-
+  pcl_pub_ = pnh_.advertise<sm::PointCloud2>("groundtruth/pcl", 10);
   image_pub_ = it.advertise("unity/image", 1);
   depth_pub_ = it.advertise("unity/depth", 1);
   opticalflow_pub_ = it.advertise("unity/opticalflow", 1);
@@ -173,6 +173,19 @@ void VisionSim::publishState(const QuadState &state) {
 
   odometry_pub_.publish(msg_odo);
   state_pub_.publish(msg_state);
+  
+  // publish transform
+  transformStamped.header.frame_id = "world";
+  transformStamped.child_frame_id = "camera";
+  transformStamped.transform.translation.x = state.p(0);
+  transformStamped.transform.translation.y = state.p(1);
+  transformStamped.transform.translation.z = state.p(2);
+  transformStamped.transform.rotation.x = state.q().x();
+  transformStamped.transform.rotation.y = state.q().y();
+  transformStamped.transform.rotation.z = state.q().z();
+  transformStamped.transform.rotation.w = state.q().w();
+  transformStamped.header.stamp = ros::Time(state.t);
+  tfb.sendTransform(transformStamped);
 }
 
 void VisionSim::publishObstacles(const QuadState &state) {
@@ -232,12 +245,55 @@ void VisionSim::publishImages(const QuadState &state) {
   image_pub_.publish(rgb_msg);
 
 
-  // // Depth Image
+  // Depth Image
   unity_quad->getCameras()[0]->getDepthMap(depth);
   sensor_msgs::ImagePtr depth_msg =
     cv_bridge::CvImage(std_msgs::Header(), "32FC1", depth).toImageMsg();
   depth_msg->header.stamp = ros::Time(state.t);
   depth_pub_.publish(depth_msg);
+
+  // Point Cloud
+  pointcloud_type* cloud (new pointcloud_type() );
+  cloud->header.stamp     = depth_msg->header.stamp.toNSec() / 1000;
+  cloud->header.frame_id  = "camera";
+  cloud->is_dense         = false; //single point of view, 2d rasterized
+  
+  double cx, cy, fx, fy, fov;//principal point and focal lengths
+  fov = unity_quad->getCameras()[0]->getFOV();
+  cx = unity_quad->getCameras()[0]->getIntrinsic()(0,2); //(cloud->width >> 1) - 0.5f;
+  cy = unity_quad->getCameras()[0]->getIntrinsic()(1,2); //(cloud->height >> 1) - 0.5f;
+  fx = unity_quad->getCameras()[0]->getIntrinsic()(0,0); 
+  fy = unity_quad->getCameras()[0]->getIntrinsic()(1,1); 
+  
+  cloud->height = depth_msg->height;
+  cloud->width = depth_msg->width;
+  cloud->points.resize (cloud->height * cloud->width);
+  const float* depth_buffer = reinterpret_cast<const float*>(&depth_msg->data[0]);
+  int depth_idx = 0;
+  pointcloud_type::iterator pt_iter = cloud->begin ();
+  for (int v = 0; v < (int)cloud->height; ++v)
+  {
+    for (int u = 0; u < (int)cloud->width; ++u, ++depth_idx, ++pt_iter)
+    {
+      point_type& pt = *pt_iter;
+      float Z = depth_buffer[depth_idx];
+      Z *= 100;
+      // Check for invalid measurements
+      if (std::isnan (Z))
+      {
+        pt.x = pt.y = pt.z = Z;
+      }
+      else // Fill in XYZ
+      {
+        pt.y = -(u - cx) * Z / fx;
+        pt.z = -(v - cy) * Z / fy;
+        pt.x = Z;
+      }
+    }
+  }
+  sm::PointCloud2 cloudMessage;
+  pcl::toROSMsg(*cloud, cloudMessage);
+  pcl_pub_.publish(cloudMessage);
 
   // Optical Flow
   unity_quad->getCameras()[0]->getOpticalFlow(of);

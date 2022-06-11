@@ -30,9 +30,9 @@ POSCONTROL_VEL_Z_P      = 5.0
 POSCONTROL_ACC_Z_P      = 0.5    # 0.5 vertical acceleration controller P gain default
 POSCONTROL_ACC_Z_I      = 1.0    # 1 vertical acceleration controller I gain default
 POSCONTROL_ACC_Z_D      = 0
-POSCONTROL_POS_XY_P     = 2     # 1
-POSCONTROL_VEL_XY_P     = 2     # 2 horizontal velocity controller P gain default
-POSCONTROL_VEL_XY_I     = 1     # 1 horizontal velocity controller I gain default
+POSCONTROL_POS_XY_P     = 1     # 1
+POSCONTROL_VEL_XY_P     = 1     # 2 horizontal velocity controller P gain default
+POSCONTROL_VEL_XY_I     = 0.1     # 1 horizontal velocity controller I gain default
 POSCONTROL_VEL_XY_D     = 0.0   # 0.5 horizontal velocity controller D gain default
 
 class PosControllers:
