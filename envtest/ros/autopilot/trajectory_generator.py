@@ -38,25 +38,12 @@ class TrajectoryGenerator:
         self._ref.ns = "ref"
         self._ref.lifetime = rospy.Duration(1)
         self._ref.type = visualization_msgs.Marker.SPHERE_LIST;
-        self._ref.pose.position.x = 0
-        self._ref.pose.position.y = 0
-        self._ref.pose.position.z = 0
         self._ref.pose.orientation.w = 1
-        self._ref.pose.orientation.x = 0
-        self._ref.pose.orientation.y = 0
-        self._ref.pose.orientation.z = 0
         self._ref.scale.x = 0.1
         self._ref.scale.y = 0.1
         self._ref.scale.z = 0.1
         self._ref.color.a = 1
-        self._ref.color.r = 0
-        self._ref.color.g = 1
-        self._ref.color.b = 0
-
-        # self._curr = self._ref
-        # self._curr.ns = "actual"
-        # self._curr.color.r = 1
-        # self._curr.color.g = 0
+        self._ref.color.b = 1
 
         quad_namespace = 'kingfisher'
         self.trajectory_sub = rospy.Subscriber("/trajectory", Point, self.update_callback,
@@ -64,11 +51,7 @@ class TrajectoryGenerator:
         self._reference_waypoint_pub = rospy.Publisher(
             quad_namespace + '/references/markers', visualization_msgs.Marker,
             queue_size=1)
-
-        # self._current_position_pub = rospy.Publisher(
-        #     quad_namespace + '/actual_position/markers', visualization_msgs.Marker,
-        #     queue_size=1)
-
+            
     # update_wpnav - run the wp controller - should be called at 100hz or higher
     def update_callback(self, traj):
         self._des_target = traj
@@ -85,15 +68,8 @@ class TrajectoryGenerator:
         
         # publish reference waypoint marker
         self._ref.header.stamp = rospy.Time.now()
-        # ref_waypoint = self._des_target + states.pos
-        # temp = Point(ref_waypoint[0],ref_waypoint[1],ref_waypoint[2])
-        self._ref.points.append(self._des_target)
-        self._reference_waypoint_pub.publish(self._ref)
-        
-        # self._curr.header.stamp = rospy.Time.now()
-        # temp = Point(states.pos[0],states.pos[1],states.pos[2])
-        # self._curr.points.append(temp)
-        # self._current_position_pub.publish(self._curr)
-
+        if self._des_target is not None:
+            self._ref.points.append(self._des_target)
+            self._reference_waypoint_pub.publish(self._ref)
         return out
     
