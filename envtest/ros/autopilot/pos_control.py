@@ -62,7 +62,7 @@ class PosControllers:
         bearing = get_bearing_rad(state.pos, des_pos)
         # update angle targets that will be passed to attitude controller
         # Collective thrust & body orientation: [throttle, roll, pitch, yaw]
-        des_CTBO = np.concatenate((self.accel_z_controller(state, des_accel), self.accel_to_lean_angles(state, des_accel), [0]))
+        des_CTBO = np.concatenate((self.accel_z_controller(state, des_accel), self.accel_to_lean_angles(state, des_accel), [math.pi/2]))
         return des_CTBO
     
     def accel_z_controller(self, states, des_acc):

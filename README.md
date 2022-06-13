@@ -127,6 +127,7 @@ To use the competition software, three steps are required:
 3. Tell your code to start! Until you publish this message, your code will run but the commands will not be executed. We use this to ensure fair comparison between approaches as code startup times can vary, especially for learning-based approaches.
 
    ```
+   roslaunch envsim visionenv_sim.launch render:=True
    rostopic pub /kingfisher/start_navigation std_msgs/Empty "{}" -1
    python src/agile_flight/envtest/ros/run_competition.py
    ```

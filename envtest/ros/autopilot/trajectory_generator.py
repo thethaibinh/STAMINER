@@ -29,7 +29,7 @@ class TrajectoryGenerator:
         # controllers
         self._init_time = None
         self._origin = [0.0, 0.0, 0.0]
-        self._des_target1 = [0.0, 0.0, 5.0]
+        self._des_target1 = [-3.0, -23.0, 5.0]
         self._des_target2 = [5.0, 0.0, 5.0]
         self._des_target = None
 
@@ -78,7 +78,7 @@ class TrajectoryGenerator:
         if self._init_time is None:
             self._init_time = _current_time()
             out =  self._des_target1
-        elif ((now - self._init_time) > 5.0) and (self._des_target is not None):
+        elif ((now - self._init_time) > 30.0) and (self._des_target is not None):
             out = [self._des_target.x, self._des_target.y, self._des_target.z]
         else:
             out = self._des_target1

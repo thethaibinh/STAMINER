@@ -117,6 +117,14 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /pyramids
+      Name: Pyramids
+      Namespaces:
+        {}
+      Queue Size: 10
+      Value: true
     - Angle Tolerance: 0
       Class: rviz/Odometry
       Covariance:
