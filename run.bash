@@ -12,7 +12,7 @@ then
   roslaunch envsim visionenv_sim.launch render:=True &
   ROS_PID="$!"
   echo $ROS_PID
-  sleep 10
+  sleep 1
 else
   ROS_PID=""
 fi

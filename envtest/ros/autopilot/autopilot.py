@@ -29,9 +29,11 @@ class Autopilot:
         if (not self.publish_commands):
             return [0.0, 0.0, 0.0, 0.0]
         else:
-            des_pos = self.traj_generator.update(state)
+            des_traj = self.traj_generator.update(state)
+            des_pos = des_traj[:3]
+            des_yaw = des_traj[3]
             # Collective thrust & body orientation: [throttle thrust, roll, pitch, yaw]
-            des_CTBO = self.pos_controller.update(state, des_pos)
+            des_CTBO = self.pos_controller.update(state, des_pos, des_yaw)
             # Collective thrust & body thrust: [throttle thrust, roll thrust, pitch thrust, yaw thrust]
             des_CTBT = self.att_controller.update(state, des_CTBO)
             # SRT - Single rotor thrust

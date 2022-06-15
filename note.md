@@ -115,5 +115,12 @@ HKUST, Nevada & Berkeley:
         - HKUST: PTO (mention above)
         - Our: shortage & risk-aware trajectory.
 
+15/06/2022:
+    - Improve local planner RAPIDDS by implementing steering mechanisms when there no new collision-free trajectory candidate is generated. Autonomous steering leads to a new angle of the environment explored, resulting in higher chances of generating new feasible trajectories.
+    Demo: escape a flat wall to go out through the door.
+    - Based on the cost function of exploring direction, the previous global planner is not effective in global guidance since it only chose the lowest cost among the collective of randomly generated candidates.Therefore, we need mechanisms for optimizing sampling direction.
+    Using DL on vision input, we will capture free space further than only depth images can and use the output perception as the steering direction, forming an intermediate planner. Thus, we can avoid a dense obstacles area before entering it.
+    Demo: avoid dense obstacle area and following the empty corridor.
+    - Challenge: Adapt a mapless global planner with this local/intermediate planner.  
 
 

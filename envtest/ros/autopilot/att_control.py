@@ -8,9 +8,8 @@ Please feel free to use and modify this, but keep the above information. Thanks!
 
 import numpy as np
 from simple_pid import PID
-from autopilot.utils import quat_to_euler_angles, SqrtControllerAtt, wrap_180_rad, wrap_360_rad
+from autopilot.utils import quat_to_euler_angles, SqrtControllerAtt, wrap_180_rad
 from math import radians
-from geometry_msgs.msg import Quaternion
 
 GRAVITY_MSS             = 9.80665
 M_PI                    = 3.141592653589793
@@ -47,8 +46,8 @@ class AttControllers:
         self.pid_ang_pitch     = SqrtControllerAtt()
         self.pid_ang_yaw       = SqrtControllerAtt()
     
-    def update(self, states, des_CTBO):
-        curr_att = quat_to_euler_angles(states.att)
+    def update(self, state, des_CTBO):
+        curr_att = quat_to_euler_angles(state.att)
         
         # run angular sqrt controllers
         des_rate = np.zeros(3)
@@ -59,8 +58,8 @@ class AttControllers:
         # run angular rate PID controllers
         des_thrust = np.zeros(4)
         des_thrust[0] = des_CTBO[0]
-        des_thrust[1] = -self.pid_rate_roll(des_rate[0] - radians(-states.omega[0]))
-        des_thrust[2] = -self.pid_rate_pitch(des_rate[1] - radians(-states.omega[1]))
-        des_thrust[3] = -self.pid_rate_yaw(des_rate[2] - radians(-states.omega[2]))
+        des_thrust[1] = -self.pid_rate_roll(des_rate[0] - radians(-state.omega[0]))
+        des_thrust[2] = -self.pid_rate_pitch(des_rate[1] - radians(-state.omega[1]))
+        des_thrust[3] = -self.pid_rate_yaw(des_rate[2] - radians(-state.omega[2]))
 
         return des_thrust

@@ -10,7 +10,7 @@ from cmath import pi
 import numpy as np
 from simple_pid import PID
 import math
-from autopilot.utils import SqrtController, SqrtControllerAtt, limit_vector_length, quat_to_euler_angles, get_bearing_rad 
+from autopilot.utils import SqrtController, SqrtControllerAtt, limit_vector_length, quat_to_euler_angles
 
 GRAVITY_MSS                 = 9.80665
 POSCONTROL_ACCELERATION_MIN = 0.50      # minimum horizontal acceleration in cm/s/s - used for sanity checking acceleration in leash length calculation
@@ -51,18 +51,16 @@ class PosControllers:
         self._leash_down_z      = POSCONTROL_LEASH_LENGTH_MIN       # vertical leash down in cm.  target will never be further than this distance below the vehicle
         self._leash_up_z        = POSCONTROL_LEASH_LENGTH_MIN       # vertical leash up in cm.  target will never be further than this distance above the vehicle
     
-    def update(self, state, des_pos):
+    def update(self, state, des_pos, des_yaw):
         self.calc_leash_length_xy()
         self.calc_leash_length_z()
         # run posotion controllers
         des_vel = self.pos_controller(state, des_pos)
         # run velocity controllers
         des_accel = self.vel_controller(state, des_vel)
-        # get bearing for yaw reference
-        bearing = get_bearing_rad(state.pos, des_pos)
         # update angle targets that will be passed to attitude controller
         # Collective thrust & body orientation: [throttle, roll, pitch, yaw]
-        des_CTBO = np.concatenate((self.accel_z_controller(state, des_accel), self.accel_to_lean_angles(state, des_accel), [math.pi/2]))
+        des_CTBO = np.concatenate((self.accel_z_controller(state, des_accel), self.accel_to_lean_angles(state, des_accel), [des_yaw]))
         return des_CTBO
     
     def accel_z_controller(self, states, des_acc):

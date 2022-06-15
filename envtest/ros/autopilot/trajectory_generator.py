@@ -5,11 +5,13 @@ email: thethaibinh@gmail.com
 license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 """
+from math import pi
 import time
 import warnings
-# import dodgeros_msgs.msg as dodgeros_msgs
+import numpy as np
+from autopilot.utils import quat_to_euler_angles, get_bearing_rad
 import visualization_msgs.msg as visualization_msgs
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Pose
 import rospy
 
 # from agile_flight.envtest.ros.autopilot.rapid_trajectory_generator import RapidTrajectory
@@ -28,10 +30,12 @@ class TrajectoryGenerator:
     def __init__(self):
         # controllers
         self._init_time = None
-        self._origin = [0.0, 0.0, 0.0]
-        self._des_target1 = [-3.0, -23.0, 5.0]
+        # self._des_target1 = [-3.0, -23.0, 5.0]
+        self._des_target1 = [0.0, 0.0, 5.0, pi/2]
         self._des_target2 = [5.0, 0.0, 5.0]
         self._des_target = None
+        self._des_yaw = None
+        self._des_traj = None
 
         self._ref = visualization_msgs.Marker()
         self._ref.header.frame_id = "world"
@@ -46,7 +50,7 @@ class TrajectoryGenerator:
         self._ref.color.b = 1
 
         quad_namespace = 'kingfisher'
-        self.trajectory_sub = rospy.Subscriber("/trajectory", Point, self.update_callback,
+        self.trajectory_sub = rospy.Subscriber("/trajectory", Pose, self.update_callback,
                                           queue_size=1, tcp_nodelay=True)
         self._reference_waypoint_pub = rospy.Publisher(
             quad_namespace + '/references/markers', visualization_msgs.Marker,
@@ -54,22 +58,31 @@ class TrajectoryGenerator:
             
     # update_wpnav - run the wp controller - should be called at 100hz or higher
     def update_callback(self, traj):
-        self._des_target = traj
+        if traj.orientation.x == 0:
+            self._des_traj = traj.position
+            self._des_target = [traj.position.x, traj.position.y, traj.position.z] 
+        self._des_yaw = traj.orientation.z/5
 
-    def update(self, states):
+    def update(self, state):
         now = _current_time()
         if self._init_time is None:
             self._init_time = _current_time()
             out =  self._des_target1
-        elif ((now - self._init_time) > 30.0) and (self._des_target is not None):
-            out = [self._des_target.x, self._des_target.y, self._des_target.z]
+        elif ((now - self._init_time) > 5.0) and (self._des_target is not None):
+            # get bearing for yaw reference
+            if np.linalg.norm(self._des_target - state.pos) > 1:
+                bearing = [-get_bearing_rad(state.pos, self._des_target)]
+            else:
+                curr_att = quat_to_euler_angles(state.att)
+                bearing = (-curr_att[2] + self._des_yaw)
+
+            out = np.concatenate((self._des_target, bearing))
         else:
             out = self._des_target1
-        
         # publish reference waypoint marker
         self._ref.header.stamp = rospy.Time.now()
-        if self._des_target is not None:
-            self._ref.points.append(self._des_target)
+        if self._des_traj is not None:
+            self._ref.points.append(self._des_traj)
             self._reference_waypoint_pub.publish(self._ref)
         return out
     
