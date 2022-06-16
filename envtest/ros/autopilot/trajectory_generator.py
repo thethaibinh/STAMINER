@@ -74,7 +74,7 @@ class TrajectoryGenerator:
                 bearing = [-get_bearing_rad(state.pos, self._des_target)]
             else:
                 curr_att = quat_to_euler_angles(state.att)
-                bearing = (-curr_att[2] + self._des_yaw)
+                bearing = (-curr_att[2] - self._des_yaw)
 
             out = np.concatenate((self._des_target, bearing))
         else:
