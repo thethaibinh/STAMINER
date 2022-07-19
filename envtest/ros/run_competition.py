@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import argparse
 
+import yaml
 import rospy
 from dodgeros_msgs.msg import Command
 from dodgeros_msgs.msg import QuadState
@@ -16,10 +17,11 @@ from utils import AgileCommandMode, AgileQuadState
 
 
 class AgilePilotNode:
-    def __init__(self, vision_based=False, ppo_path=None):
+    def __init__(self, vision_based=False, ppo_path=None, steering=False, goal=15):
         print("Initializing agile_pilot_node...")
         rospy.init_node('agile_pilot_node', anonymous=False)
-
+        self.goal = goal
+        self.steering = steering
         self.vision_based = vision_based
         self.ppo_path = ppo_path 
         self.publish_commands = False
@@ -53,7 +55,10 @@ class AgilePilotNode:
         if self.state is None:
             return
         cv_image = self.cv_bridge.imgmsg_to_cv2(img_data, desired_encoding='passthrough')
-        command = compute_command_vision_based(self.state, cv_image)
+        command = compute_command_vision_based(self.state, 
+                                                cv_image, 
+                                                self.steering,
+                                                self.goal)
         self.publish_command(command)
 
     def state_callback(self, state_data):
@@ -67,7 +72,11 @@ class AgilePilotNode:
         rl_policy = None
         if self.ppo_path is not None:
             rl_policy = load_rl_policy(self.ppo_path)
-        command = compute_command_state_based(state=self.state, obstacles=obs_data, rl_policy=rl_policy)
+        command = compute_command_state_based(state=self.state, 
+                                                obstacles=obs_data, 
+                                                rl_policy=rl_policy,
+                                                steering=self.steering,
+                                                goal=self.goal)
         self.publish_command(command)
 
     def publish_command(self, command):
@@ -119,7 +128,13 @@ if __name__ == '__main__':
     parser.add_argument('--vision_based', help='Fly vision-based', required=False, dest='vision_based',
                         action='store_true')
     parser.add_argument('--ppo_path', help='PPO neural network policy', required=False,  default=None)
-
+    parser.add_argument('--steering', help='Steering scheme', required=False,  default=False)
     args = parser.parse_args()
-    agile_pilot_node = AgilePilotNode(vision_based=args.vision_based, ppo_path=args.ppo_path)
+    with open("./evaluation_config.yaml") as f:
+        goal = yaml.safe_load(f)['target']
+
+    agile_pilot_node = AgilePilotNode(vision_based=args.vision_based, 
+                                        ppo_path=args.ppo_path, 
+                                        steering=args.steering, 
+                                        goal=goal)
     rospy.spin()

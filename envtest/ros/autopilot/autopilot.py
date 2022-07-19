@@ -25,11 +25,11 @@ class Autopilot:
         self.start_sub = rospy.Subscriber("/" + quad_name + "/start_navigation", Empty, self.start_callback,
                                           queue_size=1, tcp_nodelay=True)
     
-    def update(self, state):
+    def update(self, state, steering, goal):
         if (not self.publish_commands):
             return [0.0, 0.0, 0.0, 0.0]
         else:
-            des_traj = self.traj_generator.update(state)
+            des_traj = self.traj_generator.update(state, steering, goal)
             des_pos = des_traj[:3]
             des_yaw = des_traj[3]
             # Collective thrust & body orientation: [throttle thrust, roll, pitch, yaw]

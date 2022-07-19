@@ -16,7 +16,7 @@ do
   dirname="environment_""$i"
   mkdir -p $dirname
   python obstacle_generator.py "$RANDOM"
-  mv csvtrajs $dirname
+  # mv csvtrajs $dirname
   mv dynamic_obstacles.yaml $dirname
   mv static_obstacles.csv $dirname
 done

@@ -7,7 +7,7 @@ from rl_example import rl_example
 from autopilot.autopilot import Autopilot
 
 autopilot = Autopilot()
-def compute_command_vision_based(state, img):
+def compute_command_vision_based(state, img, steering, goal):
     ################################################
     # !!! Begin of user code !!!
     # TODO: populate the command message
@@ -20,7 +20,7 @@ def compute_command_vision_based(state, img):
     command_mode = 0
     command = AgileCommand(command_mode)
     command.t = state.t
-    command.rotor_thrusts = autopilot.update(state)
+    command.rotor_thrusts = autopilot.update(state, steering, goal)
 
     # Example of CTBR command
     # command_mode = 1
@@ -43,7 +43,7 @@ def compute_command_vision_based(state, img):
     return command
 
 
-def compute_command_state_based(state, obstacles, rl_policy=None):
+def compute_command_state_based(state, obstacles, rl_policy=None, steering=False, goal=15):
     ################################################
     # !!! Begin of user code !!!
     # TODO: populate the command message
@@ -55,7 +55,7 @@ def compute_command_state_based(state, obstacles, rl_policy=None):
     command_mode = 0
     command = AgileCommand(command_mode)
     command.t = state.t
-    command.rotor_thrusts = autopilot.update(state)
+    command.rotor_thrusts = autopilot.update(state, steering, goal)
     # Example of CTBR command
     # command_mode = 1
     # command = AgileCommand(command_mode)

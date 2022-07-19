@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Pass number of rollouts as argument
+if [ $1 ]
+then
+  N="$1"
+else
+  N=10
+fi
+
 # Set Flightmare Path if it is not set
 if [ -z $FLIGHTMARE_PATH ]
 then
@@ -17,28 +25,54 @@ else
   ROS_PID=""
 fi
 
-# Publish simulator reset
-rostopic pub /kingfisher/dodgeros_pilot/off std_msgs/Empty "{}" --once
-rostopic pub /kingfisher/dodgeros_pilot/reset_sim std_msgs/Empty "{}" --once
-rostopic pub /kingfisher/dodgeros_pilot/enable std_msgs/Bool "data: true" --once
+SUMMARY_FILE="evaluation.yaml"
 
-export ROLLOUT_NAME="rollout_""$i"
-echo "$ROLLOUT_NAME"
+# Perform N evaluation runs
+for i in $(eval echo {1..$N})
+  do
+  # Publish simulator reset
+  rostopic pub /kingfisher/dodgeros_pilot/off std_msgs/Empty "{}" --once
+  rostopic pub /kingfisher/dodgeros_pilot/reset_sim std_msgs/Empty "{}" --once
+  rostopic pub /kingfisher/dodgeros_pilot/enable std_msgs/Bool "data: true" --once
+  cd ./envtest/ros/
+  
+  case $((i%3)) in 
+    0)
+      rostopic pub /sampling_mode std_msgs/Bool "data: true" --once
+      python3 benchmarking_node.py --policy=depth_aware &
+      PY_PID="$!"
+      python3 run_competition.py --steering=True &
+      COMP_PID="$!" 
+      ;;
+    1) 
+      rostopic pub /sampling_mode std_msgs/Bool "data: false" --once
+      python3 benchmarking_node.py &
+      PY_PID="$!"
+      python3 run_competition.py &
+      COMP_PID="$!"
+      ;;
+    2)
+      rostopic pub /sampling_mode std_msgs/Bool "data: false" --once
+      python3 benchmarking_node.py --policy=steering &
+      PY_PID="$!"
+      python3 run_competition.py --steering=True &
+      COMP_PID="$!"
+      ;;
+  esac
+  cd -
 
-cd ./envtest/ros/
+  sleep 0.5
+  rostopic pub /kingfisher/start_navigation std_msgs/Empty "{}" --once
 
-python3 run_competition.py &
-COMP_PID="$!"
+  # Wait until the evaluation script has finished
+  while ps -p $PY_PID > /dev/null
+  do
+    sleep 1
+  done
+  cat "$SUMMARY_FILE" "./envtest/ros/summary.yaml" > "tmp.yaml"
+  mv "tmp.yaml" "$SUMMARY_FILE"
 
-cd -
-
-sleep 0.5
-rostopic pub /kingfisher/start_navigation std_msgs/Empty "{}" --once
-
-# Wait until the evaluation script has finished
-while :
-do
-  sleep 1
+  kill -SIGINT "$COMP_PID"
 done
 
 if [ $ROS_PID ]
