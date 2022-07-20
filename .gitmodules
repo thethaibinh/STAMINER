@@ -1,6 +1,6 @@
 [submodule "flightmare"]
 	path = flightmare
-	url = git@github.com:uzh-rpg/flightmare.git
+	url = https://github.com/thethaibinh/flightmare
 [submodule "catkin_simple"]
 	path = catkin_simple
 	url = https://github.com/catkin/catkin_simple
@@ -9,8 +9,8 @@
 	url = https://github.com/ethz-asl/mav_comm
 [submodule "dodgedrone_simulation"]
 	path = dodgedrone_simulation
-	url = git@github.com:uzh-rpg/dodgedrone_simulation.git
+	url = https://github.com/uzh-rpg/dodgedrone_simulation.git
 	branch = main
 [submodule "envtest/ros/planner/rappids"]
 	path = envtest/ros/planner/rappids
-	url = git@github.com:binhnt94/rappids.git
+	url = https://github.com/binhnt94/rappids.git
