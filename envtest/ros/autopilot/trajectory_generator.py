@@ -79,7 +79,7 @@ class TrajectoryGenerator:
                 bearing = [-get_bearing_rad(state.pos, self._des_target)] if steering else [-get_bearing_rad(state.pos, ([goal, 0, 5]))]
             else:
                 if steering and self._des_yaw is not None:
-                    bearing = (-curr_att[2] - self._des_yaw)
+                    bearing = (-curr_att[2] + self._des_yaw)
                 else:
                     bearing = self._bearing
             self._bearing = bearing

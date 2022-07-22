@@ -127,15 +127,39 @@ class Evaluator:
 
     def abortRun(self):
         print("You did not reach the goal!")
+        ttf = self.time_array[-1] - self.time_array[0]
         summary = {}
+        summary['scenario'] = self.scenario
+        summary['policy'] = self.policy
         summary['Success'] = False
-        with open("summary.yaml", "w") as f:
-            if os.getenv('ROLLOUT_NAME') is not None:
-                tmp = {}
-                tmp[os.getenv('ROLLOUT_NAME')] = summary
-                yaml.safe_dump(tmp, f)
-            else:
-                yaml.safe_dump(summary, f)
+        summary['time_to_finish'] = ttf
+        pos = np.array(self.pos)
+        _dist = 0
+        for x in range(len(pos)):
+            if x != 0:
+                _dist += np.linalg.norm(pos[x,1:4] - pos[x-1,1:4])
+        summary['travelled_distance'] = float(_dist)
+        print("Your intermediate times are:")
+        print_distance = 5
+        summary['segment_times'] = {}
+        for i in range(print_distance, self.xmax+1, print_distance):
+            print("    %2i: %5.3fs " % (i,self.time_array[i] - self.time_array[0]))
+            summary['segment_times']["%i" % i] = self.time_array[i] - self.time_array[0]
+        print("You hit %i obstacles" % self.crash)
+        summary['number_crashes'] = self.crash
+        with open("../../evaluation.yaml", "r") as f:
+            data = yaml.safe_load(f)
+            rollout_name = 'rollout_1'
+            if data is not None:
+                items = list(data.items())
+                if items[-1][0].split("_")[0] == 'rollout':
+                    rollout_name = 'rollout_' + str(int(items[-1][0].split("_")[1]) + 1)
+            f.close()
+
+        with open("summary.yaml", "w") as f:   
+            tmp = {}
+            tmp[rollout_name] = summary
+            yaml.safe_dump(tmp, f)
         rospy.signal_shutdown("Completed Evaluation")
 
 
