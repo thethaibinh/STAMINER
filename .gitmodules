@@ -13,4 +13,4 @@
 	branch = main
 [submodule "envtest/ros/planner/rappids"]
 	path = envtest/ros/planner/rappids
-	url = https://github.com/binhnt94/rappids.git
+	url = https://github.com/thethaibinh/dapper
