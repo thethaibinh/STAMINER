@@ -13,4 +13,4 @@
 	branch = main
 [submodule "envtest/ros/planner/DAPPer"]
 	path = envtest/ros/planner/DAPPer
-	url = https://github.com/thethaibinh/dapper
+	url = https://github.com/thethaibinh/DAPPer
