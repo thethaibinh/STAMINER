@@ -5,7 +5,7 @@ topics:
   start: "start_navigation"
   finish: "finish_navigation"
 
-target: 15 # goal distance in x-direction, must be INTEGER
+target: 17 # goal distance in x-direction, must be INTEGER
 timeout: 60  # after [timeout] seconds without arriving at the desired distance in x direction, the episode is considered a failure
 bounding_box: [-5, 25, -15, 15, 0, 15] # when exiting this bounding box, the episode is considered a failure
 

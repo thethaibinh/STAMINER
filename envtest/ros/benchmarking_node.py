@@ -85,8 +85,8 @@ class Evaluator:
         bin_x = int(max(min(np.floor(pos_x),self.xmax),0))
         if np.isnan(self.time_array[bin_x]):
             self.time_array[bin_x] = rospy.get_rostime().to_sec()
-
-        if pos_x > self.xmax:
+        distance_to_goal = np.linalg.norm(pos[1:4] - ([self.xmax+1,0,5]))
+        if distance_to_goal < 0.3:
             self.is_active = False
             self.publishFinish()
 

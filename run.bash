@@ -38,21 +38,21 @@ for i in $(eval echo {1..$N})
   
   case $((i%3)) in 
     0)
-      rostopic pub /sampling_mode std_msgs/Bool "data: true" --once
+      rostopic pub /sampling_mode std_msgs/Int8 "data: 2" --once
       python3 benchmarking_node.py --policy=depth_aware &
       PY_PID="$!"
       python3 run_competition.py --steering=True &
       COMP_PID="$!" 
       ;;
     1) 
-      rostopic pub /sampling_mode std_msgs/Bool "data: false" --once
+      rostopic pub /sampling_mode std_msgs/Int8 "data: 0" --once
       python3 benchmarking_node.py &
       PY_PID="$!"
       python3 run_competition.py &
       COMP_PID="$!"
       ;;
     2)
-      rostopic pub /sampling_mode std_msgs/Bool "data: false" --once
+      rostopic pub /sampling_mode std_msgs/Int8 "data: 1" --once
       python3 benchmarking_node.py --policy=steering &
       PY_PID="$!"
       python3 run_competition.py --steering=True &

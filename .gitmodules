@@ -11,6 +11,6 @@
 	path = dodgedrone_simulation
 	url = https://github.com/uzh-rpg/dodgedrone_simulation.git
 	branch = main
-[submodule "envtest/ros/planner/rappids"]
-	path = envtest/ros/planner/rappids
+[submodule "envtest/ros/planner/DAPPer"]
+	path = envtest/ros/planner/DAPPer
 	url = https://github.com/thethaibinh/dapper
