@@ -51,13 +51,13 @@ for i in $(eval echo {1..$N})
       python3 run_competition.py &
       COMP_PID="$!"
       ;;
-    2)
-      rostopic pub /sampling_mode std_msgs/Int8 "data: 1" --once
-      python3 benchmarking_node.py --policy=steering &
-      PY_PID="$!"
-      python3 run_competition.py --steering=True &
-      COMP_PID="$!"
-      ;;
+    # 2)
+    #   rostopic pub /sampling_mode std_msgs/Int8 "data: 1" --once
+    #   python3 benchmarking_node.py --policy=steering &
+    #   PY_PID="$!"
+    #   python3 run_competition.py --steering=True &
+    #   COMP_PID="$!"
+    #   ;;
   esac
   cd -
 

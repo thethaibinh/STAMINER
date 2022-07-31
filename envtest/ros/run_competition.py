@@ -136,5 +136,5 @@ if __name__ == '__main__':
     agile_pilot_node = AgilePilotNode(vision_based=args.vision_based, 
                                         ppo_path=args.ppo_path, 
                                         steering=args.steering, 
-                                        goal=goal)
+                                        goal=goal+1)
     rospy.spin()

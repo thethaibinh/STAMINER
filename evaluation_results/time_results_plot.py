@@ -141,24 +141,24 @@ with open("results_hard.yaml", "r") as stream:
         print(exc)
 
 easy_time_means = (time_easy_ny.mean(), 
-                    time_easy_st.mean(), 
+                    # time_easy_st.mean(), 
                     time_easy_da.mean())
 easy_time_std = (time_easy_ny.std(), 
-                time_easy_st.std(),
+                # time_easy_st.std(),
                 time_easy_da.std())
 
 medium_time_means = (time_medium_ny.mean(), 
-                    time_medium_st.mean(), 
+                    # time_medium_st.mean(), 
                     time_medium_da.mean())
 medium_time_std = (time_medium_ny.std(), 
-                time_medium_st.std(),
+                # time_medium_st.std(),
                 time_medium_da.std())
 
 hard_time_means = (time_hard_ny.mean(), 
-                    time_hard_st.mean(), 
+                    # time_hard_st.mean(), 
                     time_hard_da.mean())
 hard_time_std = (time_hard_ny.std(), 
-                time_hard_st.std(),
+                # time_hard_st.std(),
                 time_hard_da.std())
 
 ind = np.arange(len(easy_time_means))  # the x locations for the groups
@@ -175,7 +175,7 @@ rects3 = ax.bar(ind + width, hard_time_means, width, yerr=hard_time_std,
 ax.set_ylabel('Time [second]')
 ax.set_title('Time to finish by policy')
 ax.set_xticks(ind)
-ax.set_xticklabels(('Naive Yawing', 'Steering', 'Steering+DAPPer'))
+ax.set_xticklabels(('Naive Yawing (Lee et al)', 'Steering+DAPPer (our)'))
 ax.legend()
 
 def autolabel(rects, xpos='center'):
@@ -198,9 +198,10 @@ def autolabel(rects, xpos='center'):
                     ha=ha[xpos], va='bottom')
 
 autolabel(rects1, "left")
-autolabel(rects2, "center")
-autolabel(rects3, "right")
+# autolabel(rects2, "center")
+autolabel(rects3, "center")
 
+plt.ylim([16, 32])
 fig.tight_layout()
 plt.grid()
 plt.show()

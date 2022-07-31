@@ -141,24 +141,24 @@ with open("results_hard.yaml", "r") as stream:
         print(exc)
 
 easy_distance_means = (distance_easy_ny.mean(), 
-                    distance_easy_st.mean(), 
+                    # distance_easy_st.mean(), 
                     distance_easy_da.mean())
 easy_distance_std = (distance_easy_ny.std(), 
-                distance_easy_st.std(),
+                # distance_easy_st.std(),
                 distance_easy_da.std())
 
 medium_distance_means = (distance_medium_ny.mean(), 
-                    distance_medium_st.mean(), 
+                    # distance_medium_st.mean(), 
                     distance_medium_da.mean())
 medium_distance_std = (distance_medium_ny.std(), 
-                distance_medium_st.std(),
+                # distance_medium_st.std(),
                 distance_medium_da.std())
 
 hard_distance_means = (distance_hard_ny.mean(), 
-                    distance_hard_st.mean(), 
+                    # distance_hard_st.mean(), 
                     distance_hard_da.mean())
 hard_distance_std = (distance_hard_ny.std(), 
-                distance_hard_st.std(),
+                # distance_hard_st.std(),
                 distance_hard_da.std())
 
 ind = np.arange(len(easy_distance_means))  # the x locations for the groups
@@ -175,7 +175,7 @@ rects3 = ax.bar(ind + width, hard_distance_means, width, yerr=hard_distance_std,
 ax.set_ylabel('Distance [meter]')
 ax.set_title('Distance travelled by policy')
 ax.set_xticks(ind)
-ax.set_xticklabels(('Naive Yawing', 'Steering', 'Steering+DAPPer'))
+ax.set_xticklabels(('Naive Yawing (Lee et al.)', 'Steering+DAPPer (our)'))
 ax.legend()
 
 def autolabel(rects, xpos='center'):
@@ -198,10 +198,10 @@ def autolabel(rects, xpos='center'):
                     ha=ha[xpos], va='bottom')
 
 autolabel(rects1, "left")
-autolabel(rects2, "center")
-autolabel(rects3, "right")
+# autolabel(rects2, "center")
+autolabel(rects3, "center")
 
 fig.tight_layout()
-plt.ylim([0, 32])
+plt.ylim([15, 30])
 plt.grid()
 plt.show()
