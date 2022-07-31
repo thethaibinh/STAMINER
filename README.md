@@ -43,7 +43,7 @@ Start by creating a new catkin workspace.
 ```
 cd     # or wherever you'd like to install this code
 export ROS_VERSION=noetic
-export CATKIN_WS=./DAPPER
+export CATKIN_WS=./dapper
 mkdir -p $CATKIN_WS/src
 cd $CATKIN_WS
 catkin init
@@ -65,8 +65,13 @@ catkin build
 ```
 
 **Testing approaches in the simulator:**
-
+Navigate to the workspace directory and run
 ```
 source devel/setup.bash
+cd src/agile_flight/
 ```
-To run the the evaluation automatically, you can use the `launch_evaluation.bash N` script provided in this folder. It will automatically perform `N` rollouts and then create an `evaluation.yaml` file which summarizes the rollout statistics.
+To run the the evaluation automatically, you can use the `./run.bash N` script provided in this folder. It will automatically perform `N` rollouts and then create an `evaluation.yaml` file which summarizes the rollout statistics.
+
+**Visualize results**
+Change the name for each result file as "result_easy", "result_medium", "result_hard" corresponding to the environment.
+Then run plot script in /evaluation_results.

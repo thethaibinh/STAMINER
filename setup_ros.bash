@@ -26,10 +26,12 @@ echo "Downloading Flightmare Unity standalone..."
 wget "https://github.com/thethaibinh/flightmare_unity/releases/download/DAPPer/RPG_Flightmare_Data.zip" --directory-prefix=$project_path/flightmare/flightrender 
 
 echo "Unziping Flightmare Unity Standalone... (this might take a while)"
-unzip -o $project_path/flightmare/flightrender/RPG_Flightmare.zip -d $project_path/flightmare/flightrender | awk 'BEGIN {ORS=" "} {if(NR%10==0)print "."}'
+unzip -o $project_path/flightmare/flightrender/RPG_Flightmare_Data.zip -d $project_path/flightmare/flightrender | awk 'BEGIN {ORS=" "} {if(NR%10==0)print "."}'
 
-# echo "Removing Flightmare Unity Standalone zip file"
-# rm $project_path/flightmare/flightrender/RPG_Flightmare.zip
+echo "Removing Flightmare Unity Standalone zip file"
+rm $project_path/flightmare/flightrender/RPG_Flightmare_Data.zip
+
+chmod +x $project_path/flightmare/flightrender/RPG_Flightmare.x86_64
 
 echo "Setting the flightmare environment variable. Please add 'export FLIGHTMARE_PATH=$PWD/flightmare' to your .bashrc!"
 export FLIGHTMARE_PATH=$project_path/flightmare
