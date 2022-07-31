@@ -184,3 +184,7 @@ dependencies:
     - werkzeug==2.0.2
     - wrapt==1.13.3
     - zipp==3.6.0
+    - uniplot==0.5.0
+    - pydot==1.4.2
+    - simple_pid==1.0.1
+

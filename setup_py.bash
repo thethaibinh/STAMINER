@@ -24,7 +24,6 @@ source ~/anaconda3/etc/profile.d/conda.sh
 # 
 echo "Actiavte the environment"
 conda activate agileflight
-pip install empy catkin_pkg uniplot pydot simple_pid
 
 echo "Compiling the agile flight environment and install the environment as python package"
 cd $project_path/flightmare/flightlib/build

@@ -32,7 +32,7 @@ This library contains the core of our testing API. It will be used for evaluatin
 ```
 sudo apt install python3-catkin-tools 
 ```
-4. Install [anaconda](https://www.anaconda.com/) installed.
+4. Install [anaconda](https://www.anaconda.com/).
 
 ### Installation
 
@@ -52,7 +52,7 @@ catkin config --merge-devel
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-fdiagnostics-color
 
 cd src
-git clone git@github.com:thethaibinh/agile_flight.git
+git clone https://github.com/thethaibinh/agile_flight
 cd agile_flight
 ```
 
