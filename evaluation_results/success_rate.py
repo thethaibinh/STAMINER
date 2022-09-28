@@ -15,18 +15,18 @@ with open("results_easy.yaml", "r") as stream:
         number_easy_items_da_success = 0
         for i in items:
             if i[1]['Success'] == True:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_easy_items_ny_success += 1
                 elif i[1]['policy'] == 'steering':
                     number_easy_items_st_success += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_easy_items_da_success += 1
             else:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_easy_items_ny_failed += 1
                 elif i[1]['policy'] == 'steering':
                     number_easy_items_st_failed += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_easy_items_da_failed += 1
         easy_ny_success_rate = number_easy_items_ny_success / (number_easy_items_ny_success + number_easy_items_ny_failed)
         easy_st_success_rate = number_easy_items_st_success / (number_easy_items_st_success + number_easy_items_st_failed)
@@ -46,18 +46,18 @@ with open("results_medium.yaml", "r") as stream:
         number_medium_items_da_success = 0
         for i in items:
             if i[1]['Success'] == True:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_medium_items_ny_success += 1
                 elif i[1]['policy'] == 'steering':
                     number_medium_items_st_success += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_medium_items_da_success += 1
             else:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_medium_items_ny_failed += 1
                 elif i[1]['policy'] == 'steering':
                     number_medium_items_st_failed += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_medium_items_da_failed += 1
         medium_ny_success_rate = number_medium_items_ny_success / (number_medium_items_ny_success + number_medium_items_ny_failed)
         medium_st_success_rate = number_medium_items_st_success / (number_medium_items_st_success + number_medium_items_st_failed)
@@ -77,18 +77,18 @@ with open("results_hard.yaml", "r") as stream:
         number_hard_items_da_success = 0
         for i in items:
             if i[1]['Success'] == True:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_hard_items_ny_success += 1
                 elif i[1]['policy'] == 'steering':
                     number_hard_items_st_success += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_hard_items_da_success += 1
             else:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_hard_items_ny_failed += 1
                 elif i[1]['policy'] == 'steering':
                     number_hard_items_st_failed += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_hard_items_da_failed += 1
         hard_ny_success_rate = number_hard_items_ny_success / (number_hard_items_ny_success + number_hard_items_ny_failed)
         hard_st_success_rate = number_hard_items_st_success / (number_hard_items_st_success + number_hard_items_st_failed)

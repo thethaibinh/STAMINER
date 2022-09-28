@@ -222,7 +222,7 @@ class Evaluator:
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Benchmarking node.')
-    parser.add_argument('--policy', help='Navigation policy', required=False,  default='naive_yawing')
+    parser.add_argument('--policy', help='Navigation policy', required=False,  default='fixed_yawing')
     args = parser.parse_args()
     
     with open("./evaluation_config.yaml") as f:

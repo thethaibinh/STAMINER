@@ -15,11 +15,11 @@ with open("results_easy.yaml", "r") as stream:
             number_easy_items += 1
             if i[1]['Success'] == True:
                 number_easy_items_evaluated += 1
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_easy_items_ny += 1
                 elif i[1]['policy'] == 'steering':
                     number_easy_items_st += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_easy_items_da += 1
         # distance_easy_ny = np.zeros(number_easy_items_ny)
         # distance_easy_st = np.zeros(number_easy_items_st)
@@ -33,7 +33,7 @@ with open("results_easy.yaml", "r") as stream:
         number_easy_items_da = 0
         for i in items:
             if i[1]['Success'] == True:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     time_easy_ny[number_easy_items_ny] = i[1]['time_to_finish']
                     # distance_easy_ny[number_easy_items_ny] = i[1]['travelled_distance']
                     number_easy_items_ny += 1
@@ -41,7 +41,7 @@ with open("results_easy.yaml", "r") as stream:
                     time_easy_st[number_easy_items_st] = i[1]['time_to_finish']
                     # distance_easy_st[number_easy_items_st] = i[1]['travelled_distance']
                     number_easy_items_st += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     time_easy_da[number_easy_items_da] = i[1]['time_to_finish']
                     # distance_easy_da[number_easy_items_da] = i[1]['travelled_distance']
                     number_easy_items_da += 1
@@ -61,11 +61,11 @@ with open("results_medium.yaml", "r") as stream:
             number_medium_items += 1
             if i[1]['Success'] == True:
                 number_medium_items_evaluated += 1
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_medium_items_ny += 1
                 elif i[1]['policy'] == 'steering':
                     number_medium_items_st += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_medium_items_da += 1
         # distance_medium_ny = np.zeros(number_medium_items_ny)
         # distance_medium_st = np.zeros(number_medium_items_st)
@@ -79,7 +79,7 @@ with open("results_medium.yaml", "r") as stream:
         number_medium_items_da = 0
         for i in items:
             if i[1]['Success'] == True:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     time_medium_ny[number_medium_items_ny] = i[1]['time_to_finish']
                     # distance_medium_ny[number_medium_items_ny] = i[1]['travelled_distance']
                     number_medium_items_ny += 1
@@ -87,7 +87,7 @@ with open("results_medium.yaml", "r") as stream:
                     time_medium_st[number_medium_items_st] = i[1]['time_to_finish']
                     # distance_medium_st[number_medium_items_st] = i[1]['travelled_distance']
                     number_medium_items_st += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     time_medium_da[number_medium_items_da] = i[1]['time_to_finish']
                     # distance_medium_da[number_medium_items_da] = i[1]['travelled_distance']
                     number_medium_items_da += 1
@@ -107,11 +107,11 @@ with open("results_hard.yaml", "r") as stream:
             number_hard_items += 1
             if i[1]['Success'] == True:
                 number_hard_items_evaluated += 1
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     number_hard_items_ny += 1
                 elif i[1]['policy'] == 'steering':
                     number_hard_items_st += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     number_hard_items_da += 1
         # distance_hard_ny = np.zeros(number_hard_items_ny)
         # distance_hard_st = np.zeros(number_hard_items_st)
@@ -125,7 +125,7 @@ with open("results_hard.yaml", "r") as stream:
         number_hard_items_da = 0
         for i in items:
             if i[1]['Success'] == True:
-                if i[1]['policy'] == 'naive_yawing':
+                if i[1]['policy'] == 'fixed_yawing':
                     time_hard_ny[number_hard_items_ny] = i[1]['time_to_finish']
                     # distance_hard_ny[number_hard_items_ny] = i[1]['travelled_distance']
                     number_hard_items_ny += 1
@@ -133,7 +133,7 @@ with open("results_hard.yaml", "r") as stream:
                     time_hard_st[number_hard_items_st] = i[1]['time_to_finish']
                     # distance_hard_st[number_hard_items_st] = i[1]['travelled_distance']
                     number_hard_items_st += 1
-                elif i[1]['policy'] == 'depth_aware':
+                elif i[1]['policy'] == 'depth_based':
                     time_hard_da[number_hard_items_da] = i[1]['time_to_finish']
                     # distance_hard_da[number_hard_items_da] = i[1]['travelled_distance']
                     number_hard_items_da += 1
@@ -172,10 +172,12 @@ rects2 = ax.bar(ind, medium_time_means, width, yerr=medium_time_std,
 rects3 = ax.bar(ind + width, hard_time_means, width, yerr=hard_time_std,
                 label='Hard')
 # Add some text for labels, title and custom x-axis tick labels, etc.
+plt.rcParams['font.sans-serif'] = "Times New Roman"
+plt.rcParams['font.family'] = "sans-serif"
 ax.set_ylabel('Time [second]')
 ax.set_title('Time to finish by policy')
 ax.set_xticks(ind)
-ax.set_xticklabels(('Naive Yawing (Lee et al)', 'Steering+DAPPer (our)'))
+ax.set_xticklabels(('Fixed Yawing (Lee et al)', 'Depth-based Steering (our)'))
 ax.legend()
 
 def autolabel(rects, xpos='center'):

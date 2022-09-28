@@ -39,7 +39,7 @@ for i in $(eval echo {1..$N})
   case $((i%3)) in 
     0)
       rostopic pub /sampling_mode std_msgs/Int8 "data: 2" --once
-      python3 benchmarking_node.py --policy=depth_aware &
+      python3 benchmarking_node.py --policy=depth_based &
       PY_PID="$!"
       python3 run_competition.py --steering=True &
       COMP_PID="$!" 
