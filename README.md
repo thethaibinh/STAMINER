@@ -1,26 +1,14 @@
-# DAPPer: Depth-Aware Prunning for memoryless Planner
+# DESS - DEpth-based Sampling and Steering Constraints for Memoryless Local Planners
 
-<!-- [![IMAGE ALT TEXT HERE](docs/imgs/video.png)](https://youtu.be/LSu25NH6fW0) -->
+## Demo
+![Fixed yawing](https://raw.githubusercontent.com/thethaibinh/agile_flight/master/evaluation_results/fixed_yawing.gif)
+Local planners using the fixed yawing method get stuck more often when facing a large obstacle.
 
-
-<!-- Would you like to push the boundaries of drone navigation? Then participate in the dodgedrone competition!
-You will get the chance to develop perception and control algorithms to navigate a drone in both static and dynamic environments. Competing in the challenge will deepen your expertise in computer vision and control, and boost your research.
-You can find more information at the [competition website](https://uzh-rpg.github.io/icra2022-dodgedrone/). -->
-
-<!-- This codebase provides the following functionalities:
-
-1. A simple high-level API to evaluate your navigation policy in the Robot Operating System (ROS). This is completely independent on how you develop your algorithm.
-2. Training utilities to use reinforcement learning for the task of high-speed obstacle avoidance.
-
-All evaluation during the competition will be performed using the same ROS evaluation, but on previously unseen environments / obstacle configurations. -->
+![DESS](https://raw.githubusercontent.com/thethaibinh/agile_flight/master/evaluation_results/depth-based_steering.gif)
+DESS navigate through all large convex obstacles.
 
 ## Update
 
-<!-- - **27 March 2022** Fix a static object rendering issue. Please download the new Unity Standalone using [this](https://github.com/uzh-rpg/agile_flight/blob/main/setup_py.bash#L32-L39). Also, git pull the project. -->
-
-<!-- ## Flight API
-
-This library contains the core of our testing API. It will be used for evaluating all submitted policies. The API is completely independent on how you build your navigation system. You could either use our reinforcement learning interface (more on this below) or add your favourite navigation system. -->
 
 ### Prerequisite
 
@@ -43,7 +31,7 @@ Start by creating a new catkin workspace.
 ```
 cd     # or wherever you'd like to install this code
 export ROS_VERSION=noetic
-export CATKIN_WS=./dapper
+export CATKIN_WS=./dess
 mkdir -p $CATKIN_WS/src
 cd $CATKIN_WS
 catkin init

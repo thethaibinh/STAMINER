@@ -7,44 +7,30 @@ with open("results_easy.yaml", "r") as stream:
         data = yaml.safe_load(stream)
         items = list(data.items())
         number_easy_items_evaluated = 0
-        number_easy_items_ny = 0
-        number_easy_items_st = 0
-        number_easy_items_da = 0
+        number_easy_items_fy = 0
+        number_easy_items_db = 0
         number_easy_items = 0
         for i in items:
             number_easy_items += 1
             if i[1]['Success'] == True:
                 number_easy_items_evaluated += 1
                 if i[1]['policy'] == 'fixed_yawing':
-                    number_easy_items_ny += 1
-                elif i[1]['policy'] == 'steering':
-                    number_easy_items_st += 1
+                    number_easy_items_fy += 1
                 elif i[1]['policy'] == 'depth_based':
-                    number_easy_items_da += 1
-        distance_easy_ny = np.zeros(number_easy_items_ny)
-        distance_easy_st = np.zeros(number_easy_items_st)
-        distance_easy_da = np.zeros(number_easy_items_da)
-        # time_easy_ny = np.zeros(number_easy_items_ny)
-        # time_easy_st = np.zeros(number_easy_items_st)
-        # time_easy_da = np.zeros(number_easy_items_da)
+                    number_easy_items_db += 1
+        distance_easy_fy = np.zeros(number_easy_items_fy)
+        distance_easy_db = np.zeros(number_easy_items_db)
         
-        number_easy_items_ny = 0
-        number_easy_items_st = 0
-        number_easy_items_da = 0
+        number_easy_items_fy = 0
+        number_easy_items_db = 0
         for i in items:
             if i[1]['Success'] == True:
                 if i[1]['policy'] == 'fixed_yawing':
-                    # time_easy_ny[number_easy_items_ny] = i[1]['time_to_finish']
-                    distance_easy_ny[number_easy_items_ny] = i[1]['travelled_distance']
-                    number_easy_items_ny += 1
-                elif i[1]['policy'] == 'steering':
-                    # time_easy_st[number_easy_items_st] = i[1]['time_to_finish']
-                    distance_easy_st[number_easy_items_st] = i[1]['travelled_distance']
-                    number_easy_items_st += 1
+                    distance_easy_fy[number_easy_items_fy] = i[1]['travelled_distance']
+                    number_easy_items_fy += 1
                 elif i[1]['policy'] == 'depth_based':
-                    # time_easy_da[number_easy_items_da] = i[1]['time_to_finish']
-                    distance_easy_da[number_easy_items_da] = i[1]['travelled_distance']
-                    number_easy_items_da += 1
+                    distance_easy_db[number_easy_items_db] = i[1]['travelled_distance']
+                    number_easy_items_db += 1
     except yaml.YAMLError as exc:
         print(exc)
 
@@ -53,44 +39,30 @@ with open("results_medium.yaml", "r") as stream:
         data = yaml.safe_load(stream)
         items = list(data.items())
         number_medium_items_evaluated = 0
-        number_medium_items_ny = 0
-        number_medium_items_st = 0
-        number_medium_items_da = 0
+        number_medium_items_fy = 0
+        number_medium_items_db = 0
         number_medium_items = 0
         for i in items:
             number_medium_items += 1
             if i[1]['Success'] == True:
                 number_medium_items_evaluated += 1
                 if i[1]['policy'] == 'fixed_yawing':
-                    number_medium_items_ny += 1
-                elif i[1]['policy'] == 'steering':
-                    number_medium_items_st += 1
+                    number_medium_items_fy += 1
                 elif i[1]['policy'] == 'depth_based':
-                    number_medium_items_da += 1
-        distance_medium_ny = np.zeros(number_medium_items_ny)
-        distance_medium_st = np.zeros(number_medium_items_st)
-        distance_medium_da = np.zeros(number_medium_items_da)
-        # time_medium_ny = np.zeros(number_medium_items_ny)
-        # time_medium_st = np.zeros(number_medium_items_st)
-        # time_medium_da = np.zeros(number_medium_items_da)
+                    number_medium_items_db += 1
+        distance_medium_fy = np.zeros(number_medium_items_fy)
+        distance_medium_db = np.zeros(number_medium_items_db)
         
-        number_medium_items_ny = 0
-        number_medium_items_st = 0
-        number_medium_items_da = 0
+        number_medium_items_fy = 0
+        number_medium_items_db = 0
         for i in items:
             if i[1]['Success'] == True:
                 if i[1]['policy'] == 'fixed_yawing':
-                    # time_medium_ny[number_medium_items_ny] = i[1]['time_to_finish']
-                    distance_medium_ny[number_medium_items_ny] = i[1]['travelled_distance']
-                    number_medium_items_ny += 1
-                elif i[1]['policy'] == 'steering':
-                    # time_medium_st[number_medium_items_st] = i[1]['time_to_finish']
-                    distance_medium_st[number_medium_items_st] = i[1]['travelled_distance']
-                    number_medium_items_st += 1
+                    distance_medium_fy[number_medium_items_fy] = i[1]['travelled_distance']
+                    number_medium_items_fy += 1
                 elif i[1]['policy'] == 'depth_based':
-                    # time_medium_da[number_medium_items_da] = i[1]['time_to_finish']
-                    distance_medium_da[number_medium_items_da] = i[1]['travelled_distance']
-                    number_medium_items_da += 1
+                    distance_medium_db[number_medium_items_db] = i[1]['travelled_distance']
+                    number_medium_items_db += 1
     except yaml.YAMLError as exc:
         print(exc)
 
@@ -99,67 +71,47 @@ with open("results_hard.yaml", "r") as stream:
         data = yaml.safe_load(stream)
         items = list(data.items())
         number_hard_items_evaluated = 0
-        number_hard_items_ny = 0
-        number_hard_items_st = 0
-        number_hard_items_da = 0
+        number_hard_items_fy = 0
+        number_hard_items_db = 0
         number_hard_items = 0
         for i in items:
             number_hard_items += 1
             if i[1]['Success'] == True:
                 number_hard_items_evaluated += 1
                 if i[1]['policy'] == 'fixed_yawing':
-                    number_hard_items_ny += 1
-                elif i[1]['policy'] == 'steering':
-                    number_hard_items_st += 1
+                    number_hard_items_fy += 1
                 elif i[1]['policy'] == 'depth_based':
-                    number_hard_items_da += 1
-        distance_hard_ny = np.zeros(number_hard_items_ny)
-        distance_hard_st = np.zeros(number_hard_items_st)
-        distance_hard_da = np.zeros(number_hard_items_da)
-        # time_hard_ny = np.zeros(number_hard_items_ny)
-        # time_hard_st = np.zeros(number_hard_items_st)
-        # time_hard_da = np.zeros(number_hard_items_da)
+                    number_hard_items_db += 1
+        distance_hard_fy = np.zeros(number_hard_items_fy)
+        distance_hard_db = np.zeros(number_hard_items_db)
         
-        number_hard_items_ny = 0
-        number_hard_items_st = 0
-        number_hard_items_da = 0
+        number_hard_items_fy = 0
+        number_hard_items_db = 0
         for i in items:
             if i[1]['Success'] == True:
                 if i[1]['policy'] == 'fixed_yawing':
-                    # time_hard_ny[number_hard_items_ny] = i[1]['time_to_finish']
-                    distance_hard_ny[number_hard_items_ny] = i[1]['travelled_distance']
-                    number_hard_items_ny += 1
-                elif i[1]['policy'] == 'steering':
-                    # time_hard_st[number_hard_items_st] = i[1]['time_to_finish']
-                    distance_hard_st[number_hard_items_st] = i[1]['travelled_distance']
-                    number_hard_items_st += 1
+                    distance_hard_fy[number_hard_items_fy] = i[1]['travelled_distance']
+                    number_hard_items_fy += 1
                 elif i[1]['policy'] == 'depth_based':
-                    # time_hard_da[number_hard_items_da] = i[1]['time_to_finish']
-                    distance_hard_da[number_hard_items_da] = i[1]['travelled_distance']
-                    number_hard_items_da += 1
+                    distance_hard_db[number_hard_items_db] = i[1]['travelled_distance']
+                    number_hard_items_db += 1
     except yaml.YAMLError as exc:
         print(exc)
 
-easy_distance_means = (distance_easy_ny.mean(), 
-                    # distance_easy_st.mean(), 
-                    distance_easy_da.mean())
-easy_distance_std = (distance_easy_ny.std(), 
-                # distance_easy_st.std(),
-                distance_easy_da.std())
+easy_distance_means = (distance_easy_fy.mean(),
+                    distance_easy_db.mean())
+easy_distance_std = (distance_easy_fy.std(),
+                distance_easy_db.std())
 
-medium_distance_means = (distance_medium_ny.mean(), 
-                    # distance_medium_st.mean(), 
-                    distance_medium_da.mean())
-medium_distance_std = (distance_medium_ny.std(), 
-                # distance_medium_st.std(),
-                distance_medium_da.std())
+medium_distance_means = (distance_medium_fy.mean(),
+                    distance_medium_db.mean())
+medium_distance_std = (distance_medium_fy.std(),
+                distance_medium_db.std())
 
-hard_distance_means = (distance_hard_ny.mean(), 
-                    # distance_hard_st.mean(), 
-                    distance_hard_da.mean())
-hard_distance_std = (distance_hard_ny.std(), 
-                # distance_hard_st.std(),
-                distance_hard_da.std())
+hard_distance_means = (distance_hard_fy.mean(),
+                    distance_hard_db.mean())
+hard_distance_std = (distance_hard_fy.std(),
+                distance_hard_db.std())
 
 ind = np.arange(len(easy_distance_means))  # the x locations for the groups
 width = 0.24  # the width of the bars
@@ -200,10 +152,9 @@ def autolabel(rects, xpos='center'):
                     ha=ha[xpos], va='bottom')
 
 autolabel(rects1, "left")
-# autolabel(rects2, "center")
 autolabel(rects3, "center")
 
 fig.tight_layout()
-plt.ylim([15, 30])
+plt.ylim([21, 26])
 plt.grid()
 plt.show()
