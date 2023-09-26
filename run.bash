@@ -35,20 +35,20 @@ for i in $(eval echo {1..$N})
   rostopic pub /kingfisher/dodgeros_pilot/reset_sim std_msgs/Empty "{}" --once
   rostopic pub /kingfisher/dodgeros_pilot/enable std_msgs/Bool "data: true" --once
   cd ./envtest/ros/
-  
-  case $((i%3)) in 
+
+  case $((i%3)) in
     0)
       rostopic pub /sampling_mode std_msgs/Int8 "data: 2" --once
       python3 benchmarking_node.py --policy=depth_based &
       PY_PID="$!"
       python3 run_competition.py --steering=True &
-      COMP_PID="$!" 
+      COMP_PID="$!"
       ;;
-    1) 
-      rostopic pub /sampling_mode std_msgs/Int8 "data: 0" --once
-      python3 benchmarking_node.py &
+    1)
+      rostopic pub /sampling_mode std_msgs/Int8 "data: 2" --once
+      python3 benchmarking_node.py --policy=depth_based &
       PY_PID="$!"
-      python3 run_competition.py &
+      python3 run_competition.py --steering=True &
       COMP_PID="$!"
       ;;
   esac
