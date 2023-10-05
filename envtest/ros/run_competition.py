@@ -23,7 +23,7 @@ class AgilePilotNode:
         self.goal = goal
         self.steering = steering
         self.vision_based = vision_based
-        self.ppo_path = ppo_path 
+        self.ppo_path = ppo_path
         self.publish_commands = False
         self.cv_bridge = CvBridge()
         self.state = None
@@ -55,8 +55,8 @@ class AgilePilotNode:
         if self.state is None:
             return
         cv_image = self.cv_bridge.imgmsg_to_cv2(img_data, desired_encoding='passthrough')
-        command = compute_command_vision_based(self.state, 
-                                                cv_image, 
+        command = compute_command_vision_based(self.state,
+                                                cv_image,
                                                 self.steering,
                                                 self.goal)
         self.publish_command(command)
@@ -72,12 +72,12 @@ class AgilePilotNode:
         rl_policy = None
         if self.ppo_path is not None:
             rl_policy = load_rl_policy(self.ppo_path)
-        command = compute_command_state_based(state=self.state, 
-                                                obstacles=obs_data, 
+        command = compute_command_state_based(state=self.state,
+                                                obstacles=obs_data,
                                                 rl_policy=rl_policy,
                                                 steering=self.steering,
                                                 goal=self.goal)
-        self.publish_command(command)
+        # self.publish_command(command)
 
     def publish_command(self, command):
         if command.mode == AgileCommandMode.SRT:
@@ -133,8 +133,8 @@ if __name__ == '__main__':
     with open("./evaluation_config.yaml") as f:
         goal = yaml.safe_load(f)['target']
 
-    agile_pilot_node = AgilePilotNode(vision_based=args.vision_based, 
-                                        ppo_path=args.ppo_path, 
-                                        steering=args.steering, 
+    agile_pilot_node = AgilePilotNode(vision_based=args.vision_based,
+                                        ppo_path=args.ppo_path,
+                                        steering=args.steering,
                                         goal=goal+1)
     rospy.spin()

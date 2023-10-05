@@ -37,4 +37,10 @@
 
     <!-- Trajectory Planner -->
     <node name="planner" pkg="dess" type="main"/>
+        <!-- Autopilot -->
+        <rosparam file="$(find position_controller)/parameters/default.yaml" />
+        <param name="position_controller/use_rate_mode" value="True" />
+
+        <!-- <param name="state_estimate_timeout" value="0.1" />
+        <param name="control_command_delay" value="0.0" /> -->
 </launch>

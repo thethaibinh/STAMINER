@@ -22,7 +22,7 @@ VisionSim::VisionSim(const ros::NodeHandle &nh, const ros::NodeHandle &pnh)
 
   obstacle_pub_ =
     pnh_.advertise<envsim_msgs::ObstacleArray>("groundtruth/obstacles", 1);
-  pcl_pub_ = pnh_.advertise<sm::PointCloud2>("groundtruth/pcl", 10);
+  pcl_pub_ = pnh_.advertise<sm::PointCloud2>("groundtruth/pcl", 1);
   image_pub_ = it.advertise("unity/image", 1);
   depth_pub_ = it.advertise("unity/depth", 1);
   opticalflow_pub_ = it.advertise("unity/opticalflow", 1);
@@ -173,7 +173,7 @@ void VisionSim::publishState(const QuadState &state) {
 
   odometry_pub_.publish(msg_odo);
   state_pub_.publish(msg_state);
-  
+
   // publish transform
   transformStamped.header.frame_id = "world";
   transformStamped.child_frame_id = "camera";
@@ -257,14 +257,14 @@ void VisionSim::publishImages(const QuadState &state) {
   // cloud->header.stamp     = depth_msg->header.stamp.toNSec() / 1000;
   // cloud->header.frame_id  = "camera";
   // cloud->is_dense         = false; //single point of view, 2d rasterized
-  
+
   // double cx, cy, fx, fy, fov;//principal point and focal lengths
   // fov = unity_quad->getCameras()[0]->getFOV();
   // cx = unity_quad->getCameras()[0]->getIntrinsic()(0,2); //(cloud->width >> 1) - 0.5f;
   // cy = unity_quad->getCameras()[0]->getIntrinsic()(1,2); //(cloud->height >> 1) - 0.5f;
-  // fx = unity_quad->getCameras()[0]->getIntrinsic()(0,0); 
-  // fy = unity_quad->getCameras()[0]->getIntrinsic()(1,1); 
-  
+  // fx = unity_quad->getCameras()[0]->getIntrinsic()(0,0);
+  // fy = unity_quad->getCameras()[0]->getIntrinsic()(1,1);
+
   // cloud->height = depth_msg->height;
   // cloud->width = depth_msg->width;
   // cloud->points.resize (cloud->height * cloud->width);
