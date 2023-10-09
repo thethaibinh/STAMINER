@@ -59,7 +59,7 @@ class AgilePilotNode:
                                                 cv_image,
                                                 self.steering,
                                                 self.goal)
-        self.publish_command(command)
+        # self.publish_command(command)
 
     def state_callback(self, state_data):
         self.state = AgileQuadState(state_data)

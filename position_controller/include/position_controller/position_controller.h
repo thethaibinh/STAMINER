@@ -30,13 +30,6 @@ class PositionController {
       const quadrotor_common::TrajectoryPoint& reference_state,
       const Eigen::Quaterniond& attitude_estimate) const;
 
-  void computeAeroCompensatedReferenceInputs(
-      const quadrotor_common::TrajectoryPoint& reference_state,
-      const quadrotor_common::QuadStateEstimate& state_estimate,
-      const PositionControllerParams& config,
-      quadrotor_common::ControlCommand* reference_inputs,
-      Eigen::Vector3d* drag_accelerations) const;
-
   Eigen::Vector3d computePIDErrorAcc(
       const quadrotor_common::QuadStateEstimate& state_estimate,
       const quadrotor_common::TrajectoryPoint& reference_state,

@@ -30,19 +30,13 @@ quadrotor_common::ControlCommand PositionController::run(
   // Compute reference inputs
   Eigen::Vector3d drag_accelerations = Eigen::Vector3d::Zero();
   quadrotor_common::ControlCommand reference_inputs;
-  if (config.perform_aerodynamics_compensation) {
-    // Compute reference inputs that compensate for aerodynamic drag
-    computeAeroCompensatedReferenceInputs(reference_state, state_estimate,
-                                          config, &reference_inputs,
-                                          &drag_accelerations);
-  } else {
-    // In this case we are not considering aerodynamic accelerations
-    drag_accelerations = Eigen::Vector3d::Zero();
 
-    // Compute reference inputs as feed forward terms
-    reference_inputs = computeNominalReferenceInputs(
-        reference_state, state_estimate.orientation);
-  }
+  // In this case we are not considering aerodynamic accelerations
+  drag_accelerations = Eigen::Vector3d::Zero();
+
+  // Compute reference inputs as feed forward terms
+  reference_inputs =
+    computeNominalReferenceInputs(reference_state, state_estimate.orientation);
 
   // Compute desired control commands
   const Eigen::Vector3d pid_error_accelerations =
@@ -172,172 +166,6 @@ PositionController::computeNominalReferenceInputs(
   }
 
   return reference_command;
-}
-
-void PositionController::computeAeroCompensatedReferenceInputs(
-    const quadrotor_common::TrajectoryPoint& reference_state,
-    const quadrotor_common::QuadStateEstimate& state_estimate,
-    const PositionControllerParams& config,
-    quadrotor_common::ControlCommand* reference_inputs,
-    Eigen::Vector3d* drag_accelerations) const {
-  quadrotor_common::ControlCommand reference_command;
-
-  const Eigen::Vector3d velocity_in_body =
-      state_estimate.orientation.inverse() * reference_state.velocity;
-
-  const double dx = config.k_drag_x;
-  const double dy = config.k_drag_y;
-  const double dz = config.k_drag_z;
-
-  const Eigen::Quaterniond q_heading = Eigen::Quaterniond(
-      Eigen::AngleAxisd(reference_state.heading, Eigen::Vector3d::UnitZ()));
-
-  const Eigen::Vector3d x_C = q_heading * Eigen::Vector3d::UnitX();
-  const Eigen::Vector3d y_C = q_heading * Eigen::Vector3d::UnitY();
-
-  const Eigen::Vector3d alpha =
-      reference_state.acceleration - kGravity_ + dx * reference_state.velocity;
-  const Eigen::Vector3d beta =
-      reference_state.acceleration - kGravity_ + dy * reference_state.velocity;
-  const Eigen::Vector3d gamma =
-      reference_state.acceleration - kGravity_ + dz * reference_state.velocity;
-
-  // Reference attitude
-  const Eigen::Vector3d x_B_prototype = y_C.cross(alpha);
-  const Eigen::Vector3d x_B = computeRobustBodyXAxis(
-      x_B_prototype, x_C, y_C, state_estimate.orientation);
-
-  Eigen::Vector3d y_B = beta.cross(x_B);
-  if (almostZero(y_B.norm())) {
-    const Eigen::Vector3d z_B_estimated =
-        state_estimate.orientation * Eigen::Vector3d::UnitZ();
-    y_B = z_B_estimated.cross(x_B);
-    if (almostZero(y_B.norm())) {
-      y_B = y_C;
-    } else {
-      y_B.normalize();
-    }
-  } else {
-    y_B.normalize();
-  }
-
-  const Eigen::Vector3d z_B = x_B.cross(y_B);
-
-  const Eigen::Matrix3d R_W_B_ref(
-      (Eigen::Matrix3d() << x_B, y_B, z_B).finished());
-
-  reference_command.orientation = Eigen::Quaterniond(R_W_B_ref);
-
-  // Reference thrust
-  reference_command.collective_thrust = z_B.dot(gamma);
-
-  // Rotor drag matrix
-  const Eigen::Matrix3d D = Eigen::Vector3d(dx, dy, dz).asDiagonal();
-
-  // Reference body rates and angular accelerations
-  const double B1 = reference_command.collective_thrust -
-                    (dz - dx) * z_B.dot(reference_state.velocity);
-  const double C1 = -(dx - dy) * y_B.dot(reference_state.velocity);
-  const double D1 = x_B.dot(reference_state.jerk) +
-                    dx * x_B.dot(reference_state.acceleration);
-  const double A2 = reference_command.collective_thrust +
-                    (dy - dz) * z_B.dot(reference_state.velocity);
-  const double C2 = (dx - dy) * x_B.dot(reference_state.velocity);
-  const double D2 = -y_B.dot(reference_state.jerk) -
-                    dy * y_B.dot(reference_state.acceleration);
-  const double B3 = -y_C.dot(z_B);
-  const double C3 = (y_C.cross(z_B)).norm();
-  const double D3 = reference_state.heading_rate * x_C.dot(x_B);
-
-  const double denominator = B1 * C3 - B3 * C1;
-
-  if (almostZero(denominator)) {
-    reference_command.bodyrates = Eigen::Vector3d::Zero();
-    reference_command.angular_accelerations = Eigen::Vector3d::Zero();
-  } else {
-    // Compute body rates
-    if (almostZero(A2)) {
-      reference_command.bodyrates.x() = 0.0;
-    } else {
-      reference_command.bodyrates.x() =
-          (-B1 * C2 * D3 + B1 * C3 * D2 - B3 * C1 * D2 + B3 * C2 * D1) /
-          (A2 * denominator);
-    }
-    reference_command.bodyrates.y() = (-C1 * D3 + C3 * D1) / denominator;
-    reference_command.bodyrates.z() = (B1 * D3 - B3 * D1) / denominator;
-
-    // Compute angular accelerations
-    const double thrust_dot = z_B.dot(reference_state.jerk) +
-                              reference_command.bodyrates.x() * (dy - dz) *
-                                  y_B.dot(reference_state.velocity) +
-                              reference_command.bodyrates.y() * (dz - dx) *
-                                  x_B.dot(reference_state.velocity) +
-                              dz * z_B.dot(reference_state.acceleration);
-
-    const Eigen::Matrix3d omega_hat =
-        quadrotor_common::skew(reference_command.bodyrates);
-    const Eigen::Vector3d xi =
-        R_W_B_ref *
-            (omega_hat * omega_hat * D + D * omega_hat * omega_hat +
-             2.0 * omega_hat * D * omega_hat.transpose()) *
-            R_W_B_ref.transpose() * reference_state.velocity +
-        2.0 * R_W_B_ref * (omega_hat * D + D * omega_hat.transpose()) *
-            R_W_B_ref.transpose() * reference_state.acceleration +
-        R_W_B_ref * D * R_W_B_ref.transpose() * reference_state.jerk;
-
-    const double E1 = x_B.dot(reference_state.snap) -
-                      2.0 * thrust_dot * reference_command.bodyrates.y() -
-                      reference_command.collective_thrust *
-                          reference_command.bodyrates.x() *
-                          reference_command.bodyrates.z() +
-                      x_B.dot(xi);
-    const double E2 = -y_B.dot(reference_state.snap) -
-                      2.0 * thrust_dot * reference_command.bodyrates.x() +
-                      reference_command.collective_thrust *
-                          reference_command.bodyrates.y() *
-                          reference_command.bodyrates.z() -
-                      y_B.dot(xi);
-    const double E3 = reference_state.heading_acceleration * x_C.dot(x_B) +
-                      2.0 * reference_state.heading_rate *
-                          (reference_command.bodyrates.z() * x_C.dot(y_B) -
-                           reference_command.bodyrates.y() * x_C.dot(z_B)) -
-                      reference_command.bodyrates.x() *
-                          (reference_command.bodyrates.y() * y_C.dot(y_B) +
-                           reference_command.bodyrates.z() * y_C.dot(z_B));
-
-    if (almostZero(A2)) {
-      reference_command.angular_accelerations.x() = 0.0;
-    } else {
-      reference_command.angular_accelerations.x() =
-          (-B1 * C2 * E3 + B1 * C3 * E2 - B3 * C1 * E2 + B3 * C2 * E1) /
-          (A2 * denominator);
-    }
-    reference_command.angular_accelerations.y() =
-        (-C1 * E3 + C3 * E1) / denominator;
-    reference_command.angular_accelerations.z() =
-        (B1 * E3 - B3 * E1) / denominator;
-  }
-
-  // Transform reference rates and derivatives into estimated body frame
-  const Eigen::Matrix3d R_trans =
-      state_estimate.orientation.toRotationMatrix().transpose() * R_W_B_ref;
-  const Eigen::Vector3d bodyrates_ref = reference_command.bodyrates;
-  const Eigen::Vector3d angular_accelerations_ref =
-      reference_command.angular_accelerations;
-  const Eigen::Matrix3d bodyrates_est_hat =
-      quadrotor_common::skew(state_estimate.bodyrates);
-
-  reference_command.bodyrates = R_trans * bodyrates_ref;
-  reference_command.angular_accelerations =
-      R_trans * angular_accelerations_ref -
-      bodyrates_est_hat * R_trans * bodyrates_ref;
-
-  *reference_inputs = reference_command;
-
-  // Drag accelerations
-  *drag_accelerations =
-      -1.0 *
-      (R_W_B_ref * (D * (R_W_B_ref.transpose() * reference_state.velocity)));
 }
 
 Eigen::Vector3d PositionController::computePIDErrorAcc(
