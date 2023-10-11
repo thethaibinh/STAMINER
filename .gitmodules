@@ -20,3 +20,6 @@
 [submodule "rpg_quadrotor_common"]
 	path = rpg_quadrotor_common
 	url = git@github.com:uzh-rpg/rpg_quadrotor_common.git
+[submodule "nags_planner"]
+	path = nags_planner
+	url = git@github.com:binhnt94/nags_planner.git
