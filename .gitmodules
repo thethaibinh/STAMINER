@@ -14,3 +14,6 @@
 [submodule "dess"]
 	path = envtest/ros/planner/dess
 	url = https://github.com/thethaibinh/dess
+[submodule "eigen_catkin"]
+	path = eigen_catkin
+	url = git@github.com:ethz-asl/eigen_catkin.git
