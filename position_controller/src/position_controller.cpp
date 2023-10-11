@@ -294,10 +294,9 @@ Eigen::Vector3d PositionController::computeRobustBodyXAxis(
 
   // if the quad is upside down, x_B will point in the "opposite" direction
   // of x_C => flip x_B (unfortunately also not the solution for our problems)
-  //  if (x_B.dot(x_C) < 0.0)
-  //  {
-  //    x_B = -x_B;
-  //  }
+  if (x_B.dot(x_C) < 0.0) {
+    x_B = -x_B;
+  }
 
   return x_B;
 }
