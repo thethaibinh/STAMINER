@@ -291,9 +291,9 @@ void VisionSim::publishImages(const QuadState &state) {
       }
     }
   }
-  sm::PointCloud2 cloudMessage;
-  pcl::toROSMsg(*cloud, cloudMessage);
-  pcl_pub_.publish(cloudMessage);
+  // sm::PointCloud2 cloudMessage;
+  // pcl::toROSMsg(*cloud, cloudMessage);
+  // pcl_pub_.publish(cloudMessage);
 
   // Optical Flow
   unity_quad->getCameras()[0]->getOpticalFlow(of);
