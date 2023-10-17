@@ -13,7 +13,7 @@ from uniplot import plot
 class Evaluator:
     def __init__(self, config, scenario, policy):
         rospy.init_node("evaluator", anonymous=False)
-        
+
         self.policy = policy
         self.scenario = scenario
         self.config = config
@@ -114,7 +114,10 @@ class Evaluator:
         dist = np.linalg.norm(np.array([obs.position.x,
                                         obs.position.y,
                                         obs.position.z]))
-        margin = dist - obs.scale
+        if obs.scale > 1e-6:
+            margin = dist - obs.scale
+        else:
+            margin = 10
         self.dist.append([msg.header.stamp.to_sec(), margin])
         if margin < 0:
             if not self.hit_obstacle:
@@ -156,7 +159,7 @@ class Evaluator:
                     rollout_name = 'rollout_' + str(int(items[-1][0].split("_")[1]) + 1)
             f.close()
 
-        with open("summary.yaml", "w") as f:   
+        with open("summary.yaml", "w") as f:
             tmp = {}
             tmp[rollout_name] = summary
             yaml.safe_dump(tmp, f)
@@ -194,7 +197,7 @@ class Evaluator:
                     rollout_name = 'rollout_' + str(int(items[-1][0].split("_")[1]) + 1)
             f.close()
 
-        with open("summary.yaml", "w") as f:   
+        with open("summary.yaml", "w") as f:
             tmp = {}
             tmp[rollout_name] = summary
             yaml.safe_dump(tmp, f)
@@ -224,7 +227,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Benchmarking node.')
     parser.add_argument('--policy', help='Navigation policy', required=False,  default='fixed_yawing')
     args = parser.parse_args()
-    
+
     with open("./evaluation_config.yaml") as f:
         config = yaml.safe_load(f)
 
