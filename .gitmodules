@@ -1,6 +1,6 @@
 [submodule "flightmare"]
 	path = flightmare
-	url = https://github.com/thethaibinh/flightmare
+	url = git@github.com:thethaibinh/flightmare.git
 [submodule "catkin_simple"]
 	path = catkin_simple
 	url = https://github.com/catkin/catkin_simple
@@ -13,7 +13,7 @@
 	branch = main
 [submodule "dess"]
 	path = envtest/ros/planner/dess
-	url = https://github.com/thethaibinh/dess
+	url = git@github.com:binhnt94/DESS.git
 [submodule "eigen_catkin"]
 	path = eigen_catkin
 	url = git@github.com:ethz-asl/eigen_catkin.git
