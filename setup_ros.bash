@@ -17,7 +17,7 @@ echo "Will ask for sudo permissions:"
 sudo apt update
 sudo apt install -y --no-install-recommends build-essential cmake libzmqpp-dev libopencv-dev unzip python3-catkin-tools
 sudo pip install uniplot
-sudo apt-get install ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins
+sudo apt-get install ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins ros-noetic-mavros ros-noetic-grid-map-rviz-plugin
 
 echo "Ignoring unused Flightmare folders!"
 touch flightmare/flightros/CATKIN_IGNORE
