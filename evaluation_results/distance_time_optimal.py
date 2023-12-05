@@ -45,30 +45,42 @@ with open("spherical_db.yaml", "r") as stream:
 
 
 # Plot
-time_means = (time_to.mean(),
-              time_db.mean())
-time_std = (time_to.std(),
-            time_db.std())
+time_means = (time_db.mean(),
+              time_to.mean())
+time_std = (time_db.std(),
+            time_to.std())
+print(time_std)
 
 ind = np.arange(len(time_means))  # the x locations for the groups
 width = 0.36  # the width of the bars
 
 fig, ax = plt.subplots()
-rects1 = ax.bar(ind - width/2, time_means, width, yerr=time_std,
+rects1 = ax.bar(ind - width/2, time_means, width, yerr=time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
                 label='Spherical obstacles')
-rects3 = ax.bar(ind + width/2, time_means, width, yerr=time_std,
+rects3 = ax.bar(ind + width/2, time_means, width, yerr=time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
                 label='Forest')
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.rcParams['font.sans-serif'] = "Times New Roman"
 plt.rcParams['font.family'] = "sans-serif"
-plt.rcParams['font.size'] = 33
+plt.rcParams['font.size'] = 43
 
-ax.set_ylabel('Distance [meter]', fontsize=33)
-ax.set_title('Distance travelled by policy', fontsize=33)
+ax.set_ylabel('Distance [m]', fontsize=43)
+ax.set_title('Distance travelled by policy', fontsize=43)
 ax.set_xticks(ind)
-ax.set_xticklabels(('State-to-state Time-optimal (proposed)', 'Minimum-jerk (Nguyen et al)'), fontsize=33)
-ax.legend()
-
+ax.set_xticklabels(('DESS (Nguyen et al)', 'Our planner (proposed)'), fontsize=43)
+ax.legend(
+        # bbox_to_anchor=(1.0, 0.63, 0.0, 0.0),
+            loc="upper left",
+            ncol=1,
+            markerscale=1,
+            fontsize=43,
+            handlelength=3)
+# plt.legend(bbox_to_anchor=(1.0, 0.63, 0.0, 0.0),
+#             loc="center right",
+#             ncol=1,
+#             markerscale=1,
+#             fontsize=33,
+#             handlelength=3)
 
 def autolabel(rects):
     """
@@ -81,16 +93,16 @@ def autolabel(rects):
     for rect in rects:
         height = rect.get_height()
         ax.annotate('{:.2f}'.format(height),
-                    xy=(rect.get_x() + rect.get_width() / 2, 19.3),
+                    xy=(rect.get_x() + rect.get_width() / 2, 19.6),
                     textcoords="offset points",  # in both directions
                     ha='center', va='top')
 
 autolabel(rects1)
 autolabel(rects3)
-plt.xticks(fontsize=33)
-plt.yticks(fontsize=33)
+plt.xticks(fontsize=43)
+plt.yticks(fontsize=43)
 
-plt.ylim([19, 34])
+plt.ylim([18.7, 37])
 fig.tight_layout()
 plt.grid()
 plt.show()

@@ -49,27 +49,27 @@ time_means = (time_db.mean(),
                     time_to.mean())
 time_std = (time_db.std(),
                 time_to.std())
-
+print(time_std)
 ind = np.arange(len(time_means))  # the x locations for the groups
 width = 0.36  # the width of the bars
 
 fig, ax = plt.subplots()
-rects1 = ax.bar(ind - width/2, time_means, width, yerr=time_std,
+rects1 = ax.bar(ind - width/2, time_means, width, yerr=time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
                 label='Spherical obstacles')
-rects3 = ax.bar(ind + width/2, time_means, width, yerr=time_std,
+rects3 = ax.bar(ind + width/2, time_means, width, yerr=time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
                 label='Forest')
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.rcParams['font.sans-serif'] = "Times New Roman"
 plt.rcParams['font.family'] = "sans-serif"
-plt.rcParams['font.size'] = 33
+plt.rcParams['font.size'] = 43
 # set default font size for tick labels
-# plt.rcParams['xtick.labelsize'] = 33
-# plt.rcParams['ytick.labelsize'] = 33
+# plt.rcParams['xtick.labelsize'] = 43
+# plt.rcParams['ytick.labelsize'] = 43
 
-ax.set_ylabel('Time [second]', fontsize=33)
-ax.set_title('Time to finish by policy', fontsize=33)
+ax.set_ylabel('Time [s]', fontsize=43)
+ax.set_title('Time to finish by policy', fontsize=43)
 ax.set_xticks(ind)
-ax.set_xticklabels(('Minimum-jerk (Nguyen et al)', 'State-to-state Time-optimal (proposed)'), fontsize=33)
+ax.set_xticklabels(('DESS (Nguyen et al)', 'Our planner (proposed)'), fontsize=43)
 ax.legend()
 
 
@@ -90,10 +90,10 @@ def autolabel(rects):
 
 autolabel(rects1)
 autolabel(rects3)
-# plt.xticks(np.arange(0, 450, step=50), fontsize=33)
-# plt.yticks(np.arange(-1.2, 0.1, step=0.2), fontsize=33)
-plt.xticks(fontsize=33)
-plt.yticks(fontsize=33)
+# plt.xticks(np.arange(0, 450, step=50), fontsize=43)
+# plt.yticks(np.arange(-1.2, 0.1, step=0.2), fontsize=43)
+plt.xticks(fontsize=43)
+plt.yticks(fontsize=43)
 plt.ylim([5, 30])
 fig.tight_layout()
 plt.grid()
