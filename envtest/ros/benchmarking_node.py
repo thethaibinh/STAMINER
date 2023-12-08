@@ -7,7 +7,7 @@ import numpy as np
 from dodgeros_msgs.msg import QuadState
 from envsim_msgs.msg import ObstacleArray
 from std_msgs.msg import Empty
-
+import open3d as o3d
 from uniplot import plot
 
 class Evaluator:
@@ -17,7 +17,9 @@ class Evaluator:
         self.policy = policy
         self.scenario = scenario
         self.config = config
-
+        self.pcd = None
+        self.pcd_tree = None
+        self.current_pos = None
         self.xmax = int(self.config['target'])
 
         self.is_active = False
@@ -30,9 +32,14 @@ class Evaluator:
         self.timeout = self.config['timeout']
         self.bounding_box = np.reshape(np.array(
             self.config['bounding_box'], dtype=float), (3,2)).T
+        self.crashed_thr = self.config['crashed_thr']
 
         self._initSubscribers(config['topics'])
         self._initPublishers(config['topics'])
+        # Check at 20Hz the collision
+        self.timer_check = rospy.Timer(
+            rospy.Duration(1. / 20.),
+            self.check_for_collision)
 
 
     def _initSubscribers(self, config):
@@ -80,6 +87,9 @@ class Evaluator:
                         msg.pose.position.y,
                         msg.pose.position.z])
         self.pos.append(pos)
+        self.current_pos = [msg.pose.position.x,
+                            msg.pose.position.y,
+                            msg.pose.position.z]
 
         pos_x = msg.pose.position.x
         bin_x = int(max(min(np.floor(pos_x),self.xmax),0))
@@ -101,6 +111,23 @@ class Evaluator:
 
 
     def callbackStart(self, msg):
+        cwd = os.getcwd()
+        pointcloud_fname = os.path.join(
+            cwd, "forest.ply")
+        print("Reading pointcloud from %s" % pointcloud_fname)
+        self.pcd = o3d.io.read_point_cloud(pointcloud_fname)
+
+        if self.pcd is not None:
+            print('Done reading the point cloud!')
+        else:
+            print('Failed to read the point cloud!')
+
+        self.pcd_tree = o3d.geometry.KDTreeFlann(self.pcd)
+        if self.pcd_tree is not None:
+            print('Done converting into a KDTree!')
+        else:
+            print('Failed to convert into a KDTree!')
+
         if not self.is_active:
             self.is_active = True
         self.time_array[0] = rospy.get_rostime().to_sec()
@@ -125,6 +152,33 @@ class Evaluator:
                 print("Crashed")
             self.hit_obstacle = True
         else:
+            self.hit_obstacle = False
+
+
+    def check_for_collision(self, _timer):
+        if not self.is_active:
+            return
+
+        # check if pointcloud is ready
+        if self.pcd is None:
+            return
+        # Check if we have quadrotor state
+        if self.current_pos is None:
+            return
+
+        # Number of crashes per maneuver
+        [_, __, dist_squared] = self.pcd_tree.search_knn_vector_3d(self.current_pos, 1)
+        closest_distance = np.sqrt(dist_squared)[0]
+
+        if closest_distance < self.crashed_thr and (not self.hit_obstacle):
+            # it crashed into something, stop recording. Will not consider a condition to break the experiment now
+            self.crash += 1
+            print("Crashed")
+            self.hit_obstacle = True
+            # uncomment if you want to stop after crash
+            self.abortRun()
+        # make sure to not count double crashes
+        if self.hit_obstacle and closest_distance > 2 * self.crashed_thr:
             self.hit_obstacle = False
 
 
