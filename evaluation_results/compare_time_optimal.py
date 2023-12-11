@@ -3,6 +3,8 @@ import yaml
 import numpy as np
 
 # Loading data
+
+# Spherical
 with open("spherical_to.yaml", "r") as stream:
     try:
         data = yaml.safe_load(stream)
@@ -43,20 +45,69 @@ with open("spherical_db.yaml", "r") as stream:
     except yaml.YAMLError as exc:
         print(exc)
 
+# Forest
+with open("forest_to.yaml", "r") as stream:
+    try:
+        data = yaml.safe_load(stream)
+        items = list(data.items())
+        current_to_trial_index = 0
+        for i in items:
+            if i[1]['Success'] == True:
+                if i[1]['policy'] == 'time_opt':
+                    current_to_trial_index += 1
+        forest_time_to = np.zeros(current_to_trial_index)
+
+        current_to_trial_index = 0
+        for i in items:
+            if i[1]['Success'] == True:
+                if i[1]['policy'] == 'time_opt':
+                    forest_time_to[current_to_trial_index] = i[1]['time_to_finish']
+                    current_to_trial_index += 1
+    except yaml.YAMLError as exc:
+        print(exc)
+
+with open("forest_db.yaml", "r") as stream:
+    try:
+        data = yaml.safe_load(stream)
+        items = list(data.items())
+        current_db_trial_index = 0
+        for i in items:
+            if i[1]['Success'] == True:
+                if i[1]['policy'] == 'depth_based':
+                    current_db_trial_index += 1
+        forest_time_db = np.zeros(current_db_trial_index)
+
+        current_db_trial_index = 0
+        for i in items:
+            if i[1]['Success'] == True:
+                if i[1]['policy'] == 'depth_based':
+                    forest_time_db[current_db_trial_index] = i[1]['time_to_finish']
+                    current_db_trial_index += 1
+    except yaml.YAMLError as exc:
+        print(exc)
 
 # Plot
+# Spherical
 time_means = (time_db.mean(),
                     time_to.mean())
 time_std = (time_db.std(),
                 time_to.std())
+# Forest
+forest_time_means = (forest_time_db.mean(),
+                    forest_time_to.mean())
+forest_time_std = (forest_time_db.std(),
+                forest_time_to.std())
+
 print(time_std)
+print(forest_time_std)
+
 ind = np.arange(len(time_means))  # the x locations for the groups
 width = 0.36  # the width of the bars
 
 fig, ax = plt.subplots()
 rects1 = ax.bar(ind - width/2, time_means, width, yerr=time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
                 label='Spherical obstacles')
-rects3 = ax.bar(ind + width/2, time_means, width, yerr=time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
+rects3 = ax.bar(ind + width/2, forest_time_means, width, yerr=forest_time_std, error_kw=dict(lw=5, capsize=5, capthick=3),
                 label='Forest')
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.rcParams['font.sans-serif'] = "Times New Roman"
