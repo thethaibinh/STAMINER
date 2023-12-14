@@ -23,7 +23,7 @@ echo "Ignoring unused Flightmare folders!"
 touch flightmare/flightros/CATKIN_IGNORE
 
 echo "Downloading Flightmare Unity standalone..."
-wget "https://github.com/thethaibinh/flightmare_unity/releases/download/TO-env/RPG_Flightmare_Data.zip" --directory-prefix=$project_path/flightmare/flightrender
+gdown --id 1scWY4-PCGrZoO8HGgiUQ8arKGwiWt374 --output=$project_path/flightmare/flightrender/RPG_Flightmare_Data.zip
 
 echo "Unziping Flightmare Unity Standalone... (this might take a while)"
 unzip -o $project_path/flightmare/flightrender/RPG_Flightmare_Data.zip -d $project_path/flightmare/flightrender | awk 'BEGIN {ORS=" "} {if(NR%10==0)print "."}'
