@@ -1,14 +1,9 @@
-# DESS - DEpth-based Sampling and Steering Constraints for Memoryless Local Planners
+# STAMINER - Online State-to-State Time-Optimal Trajectory Planning for Quadrotors in Unknown Cluttered Environments
 
-## Demo
-![Fixed yawing](https://raw.githubusercontent.com/thethaibinh/agile_flight/master/evaluation_results/fixed_yawing.gif)
-Local planners using the fixed yawing method get stuck more often when facing a large obstacle.
-
-![DESS](https://raw.githubusercontent.com/thethaibinh/agile_flight/master/evaluation_results/depth-based_steering.gif)
-DESS navigate through all large convex obstacles.
+## Demonstration video 
+[![STAMINER](https://img.youtube.com/vi/85Y4ae2CjIo/0.jpg)](https://www.youtube.com/watch?v=85Y4ae2CjIo)
 
 ## Update
-
 
 ### Prerequisite
 
@@ -31,7 +26,7 @@ Start by creating a new catkin workspace.
 ```
 cd     # or wherever you'd like to install this code
 export ROS_VERSION=noetic
-export CATKIN_WS=./dess
+export CATKIN_WS=./STAMINER
 mkdir -p $CATKIN_WS/src
 cd $CATKIN_WS
 catkin init
@@ -40,8 +35,8 @@ catkin config --merge-devel
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-fdiagnostics-color
 
 cd src
-git clone https://github.com/thethaibinh/agile_flight
-cd agile_flight
+git clone https://github.com/thethaibinh/STAMINER
+cd STAMINER
 ```
 
 Run the `setup_ros.bash` and `./setup_py.bash` sequentially in the main folder of this repository, it will ask for sudo permissions. Then build the packages.
@@ -56,10 +51,8 @@ catkin build
 Navigate to the workspace directory and run
 ```
 source devel/setup.bash
-cd src/agile_flight/
+cd src/STAMINER/
 ```
 To run the the evaluation automatically, you can use the `./run.bash N` script provided in this folder. It will automatically perform `N` rollouts and then create an `evaluation.yaml` file which summarizes the rollout statistics.
 
 **Visualize results**
-Change the name for each result file as "result_easy", "result_medium", "result_hard" corresponding to the environment.
-Then run plot script in /evaluation_results.
