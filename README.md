@@ -1,5 +1,7 @@
 # STAMINER - Online State-to-State Time-Optimal Trajectory Planning for Quadrotors in Unknown Cluttered Environments
 
+This repository contains the implementation code for the algorithm described in the paper "Online State-to-State Time-Optimal Trajectory Planning for Quadrotors in Unknown Cluttered Environments", ICUAS ’24. Please don't hesitate to contact the corresponding author [Thai Binh Nguyen](mailto:thethaibinh@gmail.com) if you have any requests.
+
 ## Demonstration video 
 [![STAMINER](https://img.youtube.com/vi/85Y4ae2CjIo/0.jpg)](https://www.youtube.com/watch?v=85Y4ae2CjIo)
 
