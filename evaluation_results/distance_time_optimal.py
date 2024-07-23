@@ -114,7 +114,7 @@ plt.rcParams['font.size'] = 43
 ax.set_ylabel('Distance [m]', fontsize=43)
 ax.set_title('Distance travelled by policy', fontsize=43)
 ax.set_xticks(ind)
-ax.set_xticklabels(('DESS (Nguyen et al)', 'Our planner (proposed)'), fontsize=43)
+ax.set_xticklabels(('DESS (Nguyen et al)', 'STAMINER (proposed)'), fontsize=43)
 ax.legend(
         # bbox_to_anchor=(1.0, 0.63, 0.0, 0.0),
             loc="upper left",

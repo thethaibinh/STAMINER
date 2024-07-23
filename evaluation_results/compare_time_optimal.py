@@ -120,7 +120,7 @@ plt.rcParams['font.size'] = 43
 ax.set_ylabel('Time [s]', fontsize=43)
 ax.set_title('Time to finish by policy', fontsize=43)
 ax.set_xticks(ind)
-ax.set_xticklabels(('DESS (Nguyen et al)', 'Our planner (proposed)'), fontsize=43)
+ax.set_xticklabels(('DESS (Nguyen et al)', 'STAMINER (proposed)'), fontsize=43)
 ax.legend()
 
 
