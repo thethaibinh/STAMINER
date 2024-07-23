@@ -13,7 +13,7 @@
 	branch = main
 [submodule "dess"]
 	path = envtest/ros/planner/dess
-	url = git@github.com:binhnt94/DESS.git
+	url = git@github.com:thethaibinh/DESS.git
 [submodule "eigen_catkin"]
 	path = eigen_catkin
 	url = git@github.com:ethz-asl/eigen_catkin.git
@@ -22,4 +22,4 @@
 	url = git@github.com:uzh-rpg/rpg_quadrotor_common.git
 [submodule "nags_planner"]
 	path = nags_planner
-	url = git@github.com:binhnt94/nags_planner.git
+	url = git@github.com:thethaibinh/nags_planner.git
