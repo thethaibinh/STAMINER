@@ -2,7 +2,7 @@
 
 This repository contains the implementation code for the algorithm described in the paper "[Online State-to-State Time-Optimal Trajectory Planning for Quadrotors in Unknown Cluttered Environments](https://ieeexplore.ieee.org/document/10556839)", [ICUAS ’24](https://uasconferences.com/2024_icuas/). Please don't hesitate to contact the corresponding author [Thai Binh Nguyen](mailto:thethaibinh@gmail.com) if you have any requests.
 
-## Demonstration video 
+## Demonstration video
 [![STAMINER](https://img.youtube.com/vi/85Y4ae2CjIo/0.jpg)](https://www.youtube.com/watch?v=85Y4ae2CjIo)
 
 ## Update
@@ -15,7 +15,7 @@ This repository contains the implementation code for the algorithm described in 
 
 3. Install catkin tools.
 ```
-sudo apt install python3-catkin-tools 
+sudo apt install python3-catkin-tools
 ```
 4. Install [anaconda](https://www.anaconda.com/).
 
@@ -44,10 +44,10 @@ cd STAMINER
 Run the `setup_ros.bash` and `./setup_py.bash` sequentially in the main folder of this repository, it will ask for sudo permissions. Then build the packages.
 
 ```bash
-./setup_ros.bash
-./setup_py.bash
+./setup.bash
 catkin build
 ```
+You may need to run `catkin build` two time for all packages recognize each others.
 
 **Testing approaches in the simulator:**
 Navigate to the workspace directory and run
